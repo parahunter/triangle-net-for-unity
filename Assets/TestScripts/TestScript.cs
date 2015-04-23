@@ -8,20 +8,53 @@ public class TestScript : MonoBehaviour
     TriangleNet.Mesh mesh;
     InputGeometry geometry;
 
-    public int pointCount = 50;
     public float distance = 5;
+    public float boxDistance = 1f;
+    public float circleDistance = 0.7f;
+
     public Color gizmoColor;
+    public float boxWidth = 1f;
 
 	// Use this for initialization
 	void Start () 
     {
         geometry = new InputGeometry();
+        List<Point> points = new List<Point>();
 
-        for (int i = 0; i < pointCount; i++ )
+        points.Add(new Point((double)distance, (double)distance));
+        points.Add(new Point((double)distance, (double)-distance));
+        points.Add(new Point((double)-distance, (double)-distance));
+        points.Add(new Point((double)-distance, (double)distance));
+
+        geometry.AddRing(points, 0);
+
+        List<Point> hole = new List<Point>();
+        hole.Add(new Point((double)boxWidth, (double)boxWidth));
+        hole.Add(new Point((double)boxWidth, (double)0));
+        hole.Add(new Point((double)boxWidth, (double)-boxWidth));
+        hole.Add(new Point((double)-boxWidth, (double)-boxWidth));
+        hole.Add(new Point((double)-boxWidth, (double)boxWidth));
+        geometry.AddRingAsHole(hole, 1);
+
+        for (float offsetX = -distance; offsetX < distance; offsetX += boxDistance)
         {
-            
+            // float offsetY = -distance;
+            for (float offsetY = -distance; offsetY < distance; offsetY += boxDistance)
+            {
+                Vector2 offset = new Vector2(offsetX, offsetY) + Vector2.one * boxDistance * 0.5f;
 
-            geometry.AddPoint((double)Random.RandomRange(-distance, distance), (double)Random.RandomRange(-distance, distance));
+                float radians = Random.RandomRange(0, 2 * Mathf.PI);
+                float length = Random.RandomRange(0, circleDistance);
+
+                Vector2 pos = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians)) * length;
+                pos += offset;
+
+                if (Mathf.Abs(pos.x) < boxWidth && Mathf.Abs(pos.y) < boxWidth)
+                    continue;
+
+                //points.Add(new Point((double)pos.x, (double)pos.y));
+                geometry.AddPoint( (double)pos.x, (double)pos.y);
+            }
         }
 
         mesh = new TriangleNet.Mesh();
