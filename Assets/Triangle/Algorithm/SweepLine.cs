@@ -31,14 +31,14 @@ namespace TriangleNet.Algorithm
         }
 
         Mesh mesh;
-        double xminextreme;      // Nonexistent x value used as a flag in sweepline.
+        float xminextreme;      // Nonexistent x value used as a flag in sweepline.
         List<SplayNode> splaynodes;
 
         #region Heap
 
         void HeapInsert(SweepEvent[] heap, int heapsize, SweepEvent newevent)
         {
-            double eventx, eventy;
+            float eventx, eventy;
             int eventnum;
             int parent;
             bool notdone;
@@ -72,7 +72,7 @@ namespace TriangleNet.Algorithm
         void Heapify(SweepEvent[] heap, int heapsize, int eventnum)
         {
             SweepEvent thisevent;
-            double eventx, eventy;
+            float eventx, eventy;
             int leftchild, rightchild;
             int smallest;
             bool notdone;
@@ -125,7 +125,7 @@ namespace TriangleNet.Algorithm
         void HeapDelete(SweepEvent[] heap, int heapsize, int eventnum)
         {
             SweepEvent moveevent;
-            double eventx, eventy;
+            float eventx, eventy;
             int parent;
             bool notdone;
 
@@ -360,11 +360,11 @@ namespace TriangleNet.Algorithm
         #endregion
 
         SplayNode CircleTopInsert(SplayNode splayroot, Otri newkey,
-                                  Vertex pa, Vertex pb, Vertex pc, double topy)
+                                  Vertex pa, Vertex pb, Vertex pc, float topy)
         {
-            double ccwabc;
-            double xac, yac, xbc, ybc;
-            double aclen2, bclen2;
+            float ccwabc;
+            float xac, yac, xbc, ybc;
+            float aclen2, bclen2;
             Point searchpoint = new Point(); // TODO: mesh.nextras
             Otri dummytri = default(Otri);
 
@@ -375,7 +375,7 @@ namespace TriangleNet.Algorithm
             ybc = pb.y - pc.y;
             aclen2 = xac * xac + yac * yac;
             bclen2 = xbc * xbc + ybc * ybc;
-            searchpoint.x = pc.x - (yac * bclen2 - ybc * aclen2) / (2.0 * ccwabc);
+            searchpoint.x = pc.x - (yac * bclen2 - ybc * aclen2) / (2.0f * ccwabc);
             searchpoint.y = topy;
             return SplayInsert(Splay(splayroot, searchpoint, ref dummytri), newkey, searchpoint);
         }
@@ -383,7 +383,7 @@ namespace TriangleNet.Algorithm
         bool RightOfHyperbola(ref Otri fronttri, Point newsite)
         {
             Vertex leftvertex, rightvertex;
-            double dxa, dya, dxb, dyb;
+            float dxa, dya, dxb, dyb;
 
             Statistic.HyperbolaCount++;
 
@@ -412,10 +412,10 @@ namespace TriangleNet.Algorithm
             return dya * (dxb * dxb + dyb * dyb) > dyb * (dxa * dxa + dya * dya);
         }
 
-        double CircleTop(Vertex pa, Vertex pb, Vertex pc, double ccwabc)
+        float CircleTop(Vertex pa, Vertex pb, Vertex pc, float ccwabc)
         {
-            double xac, yac, xbc, ybc, xab, yab;
-            double aclen2, bclen2, ablen2;
+            float xac, yac, xbc, ybc, xab, yab;
+            float aclen2, bclen2, ablen2;
 
             Statistic.CircleTopCount++;
 
@@ -428,7 +428,7 @@ namespace TriangleNet.Algorithm
             aclen2 = xac * xac + yac * yac;
             bclen2 = xbc * xbc + ybc * ybc;
             ablen2 = xab * xab + yab * yab;
-            return pc.y + (xac * bclen2 - xbc * aclen2 + Math.Sqrt(aclen2 * bclen2 * ablen2)) / (2.0 * ccwabc);
+            return pc.y + (xac * bclen2 - xbc * aclen2 + UnityEngine.Mathf.Sqrt(aclen2 * bclen2 * ablen2)) / (2.0f * ccwabc);
         }
 
         void Check4DeadEvent(ref Otri checktri, SweepEvent[] eventheap, ref int heapsize)
@@ -547,7 +547,7 @@ namespace TriangleNet.Algorithm
             Vertex nextvertex, lastvertex;
             Vertex connectvertex;
             Vertex leftvertex, midvertex, rightvertex;
-            double lefttest, righttest;
+            float lefttest, righttest;
             int heapsize;
             bool check4events, farrightflag = false;
 
@@ -755,7 +755,7 @@ namespace TriangleNet.Algorithm
         /// </remarks>
         class SweepEvent
         {
-            public double xkey, ykey;     // Coordinates of the event.
+            public float xkey, ykey;     // Coordinates of the event.
             public Vertex vertexEvent;    // Vertex event.
             public Otri otriEvent;        // Circle event.
             public int heapposition;      // Marks this event's position in the heap.

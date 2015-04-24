@@ -26,7 +26,7 @@ namespace TriangleNet.Data
         public int ID = 0;
 
         public Otri poortri; // A skinny or too-large triangle.
-        public double key;       // cos^2 of smallest (apical) angle.
+        public float key;       // cos^2 of smallest (apical) angle.
         public Vertex triangorg, triangdest, triangapex; // Its three vertices.
         public BadTriangle nexttriang; // Pointer to next bad triangle.
 

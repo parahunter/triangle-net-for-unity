@@ -125,7 +125,7 @@ namespace TriangleNet.Geometry
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
-        public void AddPoint(double x, double y)
+        public void AddPoint(float x, float y)
         {
             AddPoint(x, y, 0);
         }
@@ -136,7 +136,7 @@ namespace TriangleNet.Geometry
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="boundary">Boundary marker.</param>
-        public void AddPoint(double x, double y, int boundary)
+        public void AddPoint(float x, float y, int boundary)
         {
             points.Add(new Vertex(x, y, boundary));
 
@@ -150,9 +150,9 @@ namespace TriangleNet.Geometry
         /// <param name="y">Y coordinate.</param>
         /// <param name="boundary">Boundary marker.</param>
         /// <param name="attribute">Point attribute.</param>
-        public void AddPoint(double x, double y, int boundary, double attribute)
+        public void AddPoint(float x, float y, int boundary, float attribute)
         {
-            AddPoint(x, y, 0, new double[] { attribute });
+            AddPoint(x, y, 0, new float[] { attribute });
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace TriangleNet.Geometry
         /// <param name="y">Y coordinate.</param>
         /// <param name="boundary">Boundary marker.</param>
         /// <param name="attribs">Point attributes.</param>
-        public void AddPoint(double x, double y, int boundary, double[] attribs)
+        public void AddPoint(float x, float y, int boundary, float[] attribs)
         {
             if (pointAttributes < 0)
             {
@@ -187,7 +187,7 @@ namespace TriangleNet.Geometry
         /// </summary>
         /// <param name="x">X coordinate of the hole.</param>
         /// <param name="y">Y coordinate of the hole.</param>
-        public void AddHole(double x, double y)
+        public void AddHole(float x, float y)
         {
             holes.Add(new Point(x, y));
         }
@@ -198,7 +198,7 @@ namespace TriangleNet.Geometry
         /// <param name="x">X coordinate of the hole.</param>
         /// <param name="y">Y coordinate of the hole.</param>
         /// <param name="id">The region id.</param>
-        public void AddRegion(double x, double y, int id)
+        public void AddRegion(float x, float y, int id)
         {
             regions.Add(new RegionPointer(x, y, id));
         }

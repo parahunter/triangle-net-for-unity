@@ -89,8 +89,8 @@ namespace TriangleNet.Tools
                 for (j = adj_row[perm[i]]; j <= adj_row[perm[i] + 1] - 1; j++)
                 {
                     col = perm_inv[adj[j - 1]];
-                    band_lo = Math.Max(band_lo, i - col);
-                    band_hi = Math.Max(band_hi, col - i);
+                    band_lo = UnityEngine.Mathf.Max(band_lo, i - col);
+                    band_hi = UnityEngine.Mathf.Max(band_hi, col - i);
                 }
             }
 
@@ -566,7 +566,7 @@ namespace TriangleNet.Tools
                 {
                     node = ls[offset + i - 1];
                     jstrt = -adj_row[node];
-                    jstop = Math.Abs(adj_row[node + 1]) - 1;
+                    jstop = UnityEngine.Mathf.Abs(adj_row[node + 1]) - 1;
                     ideg = 0;
 
                     for (j = jstrt; j <= jstop; j++)

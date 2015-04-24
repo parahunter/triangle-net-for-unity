@@ -406,7 +406,7 @@ namespace TriangleNet.IO
             Otri tri = default(Otri), trisym = default(Otri);
             Vertex torg, tdest, tapex;
             Point circumcenter;
-            double xi = 0, eta = 0;
+            float xi = 0, eta = 0;
 
             int p1, p2, index = 0;
             tri.orient = 0;

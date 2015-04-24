@@ -74,7 +74,7 @@ namespace TriangleNet.Tools
         /// <summary>
         /// Minimum triangle area.
         /// </summary>
-        public double AreaMinimum
+        public float AreaMinimum
         {
             get { return areaMeasure.area_min; }
         }
@@ -82,7 +82,7 @@ namespace TriangleNet.Tools
         /// <summary>
         /// Maximum triangle area.
         /// </summary>
-        public double AreaMaximum
+        public float AreaMaximum
         {
             get { return areaMeasure.area_max; }
         }
@@ -90,7 +90,7 @@ namespace TriangleNet.Tools
         /// <summary>
         /// Ratio of maximum and minimum triangle area.
         /// </summary>
-        public double AreaRatio
+        public float AreaRatio
         {
             get { return areaMeasure.area_max / areaMeasure.area_min; }
         }
@@ -98,7 +98,7 @@ namespace TriangleNet.Tools
         /// <summary>
         /// Smallest angle.
         /// </summary>
-        public double AlphaMinimum
+        public float AlphaMinimum
         {
             get { return alphaMeasure.alpha_min; }
         }
@@ -106,7 +106,7 @@ namespace TriangleNet.Tools
         /// <summary>
         /// Maximum smallest angle.
         /// </summary>
-        public double AlphaMaximum
+        public float AlphaMaximum
         {
             get { return alphaMeasure.alpha_max; }
         }
@@ -114,7 +114,7 @@ namespace TriangleNet.Tools
         /// <summary>
         /// Average angle.
         /// </summary>
-        public double AlphaAverage
+        public float AlphaAverage
         {
             get { return alphaMeasure.alpha_ave; }
         }
@@ -122,7 +122,7 @@ namespace TriangleNet.Tools
         /// <summary>
         /// Average angle weighted by area.
         /// </summary>
-        public double AlphaArea
+        public float AlphaArea
         {
             get { return alphaMeasure.alpha_area; }
         }
@@ -130,7 +130,7 @@ namespace TriangleNet.Tools
         /// <summary>
         /// Smallest aspect ratio.
         /// </summary>
-        public double Q_Minimum
+        public float Q_Minimum
         {
             get { return qMeasure.q_min; }
         }
@@ -138,7 +138,7 @@ namespace TriangleNet.Tools
         /// <summary>
         /// Largest aspect ratio.
         /// </summary>
-        public double Q_Maximum
+        public float Q_Maximum
         {
             get { return qMeasure.q_max; }
         }
@@ -146,7 +146,7 @@ namespace TriangleNet.Tools
         /// <summary>
         /// Average aspect ratio.
         /// </summary>
-        public double Q_Average
+        public float Q_Average
         {
             get { return qMeasure.q_ave; }
         }
@@ -154,7 +154,7 @@ namespace TriangleNet.Tools
         /// <summary>
         /// Average aspect ratio weighted by area.
         /// </summary>
-        public double Q_Area
+        public float Q_Area
         {
             get { return qMeasure.q_area; }
         }
@@ -176,9 +176,9 @@ namespace TriangleNet.Tools
         private void Compute()
         {
             Point a, b, c;
-            double ab, bc, ca;
-            double lx, ly;
-            double area;
+            float ab, bc, ca;
+            float lx, ly;
+            float area;
 
             int n = 0;
 
@@ -192,13 +192,13 @@ namespace TriangleNet.Tools
 
                 lx = a.x - b.x;
                 ly = a.y - b.y;
-                ab = Math.Sqrt(lx * lx + ly * ly);
+                ab = UnityEngine.Mathf.Sqrt(lx * lx + ly * ly);
                 lx = b.x - c.x;
                 ly = b.y - c.y;
-                bc = Math.Sqrt(lx * lx + ly * ly);
+                bc = UnityEngine.Mathf.Sqrt(lx * lx + ly * ly);
                 lx = c.x - a.x;
                 ly = c.y - a.y;
-                ca = Math.Sqrt(lx * lx + ly * ly);
+                ca = UnityEngine.Mathf.Sqrt(lx * lx + ly * ly);
 
                 area = areaMeasure.Measure(a, b, c);
                 alphaMeasure.Measure(ab, bc, ca, area);
@@ -257,8 +257,8 @@ namespace TriangleNet.Tools
                     {
                         gj = tri.GetVertex(k).id;
 
-                        mu = Math.Max(mu, gj - gi);
-                        ml = Math.Max(ml, gi - gj);
+                        mu = UnityEngine.Mathf.Max(mu, gj - gi);
+                        ml = UnityEngine.Mathf.Max(ml, gi - gj);
                     }
                 }
             }
@@ -269,11 +269,11 @@ namespace TriangleNet.Tools
         class AreaMeasure
         {
             // Minimum area
-            public double area_min = double.MaxValue;
+            public float area_min = float.MaxValue;
             // Maximum area
-            public double area_max = -double.MaxValue;
+            public float area_max = -float.MaxValue;
             // Total area of geometry
-            public double area_total = 0;
+            public float area_total = 0;
             // Nmber of triangles with zero area
             public int area_zero = 0;
 
@@ -282,8 +282,8 @@ namespace TriangleNet.Tools
             /// </summary>
             public void Reset()
             {
-                area_min = double.MaxValue;
-                area_max = -double.MaxValue;
+                area_min = float.MaxValue;
+                area_max = -float.MaxValue;
                 area_total = 0;
                 area_zero = 0;
             }
@@ -295,15 +295,15 @@ namespace TriangleNet.Tools
             /// <param name="b">Triangle corner b.</param>
             /// <param name="c">Triangle corner c.</param>
             /// <returns>Triangle area.</returns>
-            public double Measure(Point a, Point b, Point c)
+            public float Measure(Point a, Point b, Point c)
             {
-                double area = 0.5 * Math.Abs(a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y));
+                float area = 0.5f * UnityEngine.Mathf.Abs(a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y));
 
-                area_min = Math.Min(area_min, area);
-                area_max = Math.Max(area_max, area);
+                area_min = UnityEngine.Mathf.Min(area_min, area);
+                area_max = UnityEngine.Mathf.Max(area_max, area);
                 area_total += area;
 
-                if (area == 0.0)
+                if (area == 0.0f)
                 {
                     area_zero = area_zero + 1;
                 }
@@ -327,38 +327,38 @@ namespace TriangleNet.Tools
         class AlphaMeasure
         {
             // Minimum value over all triangles
-            public double alpha_min;
+            public float alpha_min;
             // Maximum value over all triangles
-            public double alpha_max;
+            public float alpha_max;
             // Value averaged over all triangles
-            public double alpha_ave;
+            public float alpha_ave;
             // Value averaged over all triangles and weighted by area
-            public double alpha_area;
+            public float alpha_area;
 
             /// <summary>
             /// Reset all values.
             /// </summary>
             public void Reset()
             {
-                alpha_min = double.MaxValue;
-                alpha_max = -double.MaxValue;
+                alpha_min = float.MaxValue;
+                alpha_max = -float.MaxValue;
                 alpha_ave = 0;
                 alpha_area = 0;
             }
 
-            double acos(double c)
+            float acos(float c)
             {
-                if (c <= -1.0)
+                if (c <= -1.0f)
                 {
-                    return Math.PI;
+                    return UnityEngine.Mathf.PI;
                 }
-                else if (1.0 <= c)
+                else if (1.0f <= c)
                 {
-                    return 0.0;
+                    return 0.0f;
                 }
                 else
                 {
-                    return Math.Acos(c);
+                    return UnityEngine.Mathf.Acos(c);
                 }
             }
 
@@ -370,67 +370,67 @@ namespace TriangleNet.Tools
             /// <param name="ca">Side length ca.</param>
             /// <param name="area">Triangle area.</param>
             /// <returns></returns>
-            public double Measure(double ab, double bc, double ca, double area)
+            public float Measure(float ab, float bc, float ca, float area)
             {
-                double alpha = double.MaxValue;
+                float alpha = float.MaxValue;
 
-                double ab2 = ab * ab;
-                double bc2 = bc * bc;
-                double ca2 = ca * ca;
+                float ab2 = ab * ab;
+                float bc2 = bc * bc;
+                float ca2 = ca * ca;
 
-                double a_angle;
-                double b_angle;
-                double c_angle;
+                float a_angle;
+                float b_angle;
+                float c_angle;
 
                 // Take care of a ridiculous special case.
-                if (ab == 0.0 && bc == 0.0 && ca == 0.0)
+                if (ab == 0.0f && bc == 0.0f && ca == 0.0f)
                 {
-                    a_angle = 2.0 * Math.PI / 3.0;
-                    b_angle = 2.0 * Math.PI / 3.0;
-                    c_angle = 2.0 * Math.PI / 3.0;
+                    a_angle = 2.0f * UnityEngine.Mathf.PI / 3.0f;
+                    b_angle = 2.0f * UnityEngine.Mathf.PI / 3.0f;
+                    c_angle = 2.0f * UnityEngine.Mathf.PI / 3.0f;
                 }
                 else
                 {
-                    if (ca == 0.0 || ab == 0.0)
+                    if (ca == 0.0f || ab == 0.0f)
                     {
-                        a_angle = Math.PI;
+                        a_angle = UnityEngine.Mathf.PI;
                     }
                     else
                     {
-                        a_angle = acos((ca2 + ab2 - bc2) / (2.0 * ca * ab));
+                        a_angle = acos((ca2 + ab2 - bc2) / (2.0f * ca * ab));
                     }
 
-                    if (ab == 0.0 || bc == 0.0)
+                    if (ab == 0.0f || bc == 0.0f)
                     {
-                        b_angle = Math.PI;
+                        b_angle = UnityEngine.Mathf.PI;
                     }
                     else
                     {
-                        b_angle = acos((ab2 + bc2 - ca2) / (2.0 * ab * bc));
+                        b_angle = acos((ab2 + bc2 - ca2) / (2.0f * ab * bc));
                     }
 
-                    if (bc == 0.0 || ca == 0.0)
+                    if (bc == 0.0f || ca == 0.0f)
                     {
-                        c_angle = Math.PI;
+                        c_angle = UnityEngine.Mathf.PI;
                     }
                     else
                     {
-                        c_angle = acos((bc2 + ca2 - ab2) / (2.0 * bc * ca));
+                        c_angle = acos((bc2 + ca2 - ab2) / (2.0f * bc * ca));
                     }
                 }
 
-                alpha = Math.Min(alpha, a_angle);
-                alpha = Math.Min(alpha, b_angle);
-                alpha = Math.Min(alpha, c_angle);
+                alpha = UnityEngine.Mathf.Min(alpha, a_angle);
+                alpha = UnityEngine.Mathf.Min(alpha, b_angle);
+                alpha = UnityEngine.Mathf.Min(alpha, c_angle);
 
                 // Normalize angle from [0,pi/3] radians into qualities in [0,1].
-                alpha = alpha * 3.0 / Math.PI;
+                alpha = alpha * 3.0f / UnityEngine.Mathf.PI;
 
                 alpha_ave += alpha;
                 alpha_area += area * alpha;
 
-                alpha_min = Math.Min(alpha, alpha_min);
-                alpha_max = Math.Max(alpha, alpha_max);
+                alpha_min = UnityEngine.Mathf.Min(alpha, alpha_min);
+                alpha_max = UnityEngine.Mathf.Max(alpha, alpha_max);
 
                 return alpha;
             }
@@ -438,7 +438,7 @@ namespace TriangleNet.Tools
             /// <summary>
             /// Normalize values.
             /// </summary>
-            public void Normalize(int n, double area_total)
+            public void Normalize(int n, float area_total)
             {
                 if (n > 0)
                 {
@@ -446,16 +446,16 @@ namespace TriangleNet.Tools
                 }
                 else
                 {
-                    alpha_ave = 0.0;
+                    alpha_ave = 0.0f;
                 }
 
-                if (0.0 < area_total)
+                if (0.0f < area_total)
                 {
                     alpha_area /= area_total;
                 }
                 else
                 {
-                    alpha_area = 0.0;
+                    alpha_area = 0.0f;
                 }
             }
         }
@@ -476,21 +476,21 @@ namespace TriangleNet.Tools
         class Q_Measure
         {
             // Minimum value over all triangles
-            public double q_min;
+            public float q_min;
             // Maximum value over all triangles
-            public double q_max;
+            public float q_max;
             // Average value
-            public double q_ave;
+            public float q_ave;
             // Average value weighted by the area of each triangle
-            public double q_area;
+            public float q_area;
 
             /// <summary>
             /// Reset all values.
             /// </summary>
             public void Reset()
             {
-                q_min = double.MaxValue;
-                q_max = -double.MaxValue;
+                q_min = float.MaxValue;
+                q_max = -float.MaxValue;
                 q_ave = 0;
                 q_area = 0;
             }
@@ -503,12 +503,12 @@ namespace TriangleNet.Tools
             /// <param name="ca">Side length ca.</param>
             /// <param name="area">Triangle area.</param>
             /// <returns></returns>
-            public double Measure(double ab, double bc, double ca, double area)
+            public float Measure(float ab, float bc, float ca, float area)
             {
-                double q = (bc + ca - ab) * (ca + ab - bc) * (ab + bc - ca) / (ab * bc * ca);
+                float q = (bc + ca - ab) * (ca + ab - bc) * (ab + bc - ca) / (ab * bc * ca);
 
-                q_min = Math.Min(q_min, q);
-                q_max = Math.Max(q_max, q);
+                q_min = UnityEngine.Mathf.Min(q_min, q);
+                q_max = UnityEngine.Mathf.Max(q_max, q);
 
                 q_ave += q;
                 q_area += q * area;
@@ -519,7 +519,7 @@ namespace TriangleNet.Tools
             /// <summary>
             /// Normalize values.
             /// </summary>
-            public void Normalize(int n, double area_total)
+            public void Normalize(int n, float area_total)
             {
                 if (n > 0)
                 {
@@ -527,16 +527,16 @@ namespace TriangleNet.Tools
                 }
                 else
                 {
-                    q_ave = 0.0;
+                    q_ave = 0.0f;
                 }
 
-                if (area_total > 0.0)
+                if (area_total > 0.0f)
                 {
                     q_area /= area_total;
                 }
                 else
                 {
-                    q_area = 0.0;
+                    q_area = 0.0f;
                 }
             }
         }

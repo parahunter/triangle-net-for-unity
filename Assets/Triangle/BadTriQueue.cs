@@ -20,7 +20,7 @@ namespace TriangleNet
     /// </remarks>
     class BadTriQueue
     {
-        static readonly double SQRT2 = 1.4142135623730950488016887242096980785696718753769480732;
+        static readonly float SQRT2 = 1.4142135623730950488016887242096980785696718753769480732f;
 
         public int Count { get { return this.count; } }
 
@@ -52,7 +52,7 @@ namespace TriangleNet
         /// <param name="badtri">The bad triangle to enqueue.</param>
         public void Enqueue(BadTriangle badtri)
         {
-            double length, multiplier;
+            float length, multiplier;
             int exponent, expincrement;
             int queuenumber;
             int posexponent;
@@ -71,17 +71,17 @@ namespace TriangleNet
             {
                 // 'badtri.key' is 2.0 to a negative exponent, so we'll record that
                 // fact and use the reciprocal of 'badtri.key', which is > 1.0.
-                length = 1.0 / badtri.key;
+                length = 1.0f / badtri.key;
                 posexponent = 0;
             }
             // 'length' is approximately 2.0 to what exponent?  The following code
             // determines the answer in time logarithmic in the exponent.
             exponent = 0;
-            while (length > 2.0)
+            while (length > 2.0f)
             {
                 // Find an approximation by repeated squaring of two.
                 expincrement = 1;
-                multiplier = 0.5;
+                multiplier = 0.5f;
                 while (length * multiplier * multiplier > 1.0)
                 {
                     expincrement *= 2;
@@ -93,7 +93,7 @@ namespace TriangleNet
             }
             // 'length' is approximately squareroot(2.0) to what exponent?
             exponent = 2 * exponent + (length > SQRT2 ? 1 : 0);
-            // 'exponent' is now in the range 0...2047 for IEEE double precision.
+            // 'exponent' is now in the range 0...2047 for IEEE float precision.
             // Choose a queue in the range 0...4095.  The shortest edges have the
             // highest priority (queue 4095).
             if (posexponent > 0)
@@ -151,7 +151,7 @@ namespace TriangleNet
         /// <param name="enqapex"></param>
         /// <param name="enqorg"></param>
         /// <param name="enqdest"></param>
-        public void Enqueue(ref Otri enqtri, double minedge, Vertex enqapex, Vertex enqorg, Vertex enqdest)
+        public void Enqueue(ref Otri enqtri, float minedge, Vertex enqapex, Vertex enqorg, Vertex enqdest)
         {
             // Allocate space for the bad triangle.
             BadTriangle newbad = new BadTriangle();

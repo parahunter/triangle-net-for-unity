@@ -26,7 +26,7 @@ namespace TriangleNet
         NewLocation newLocation;
 
         // Not used at the moment
-        Func<Point, Point, Point, double, bool> userTest;
+        Func<Point, Point, Point, float, bool> userTest;
 
         ILog<SimpleLogItem> logger;
 
@@ -250,7 +250,7 @@ namespace TriangleNet
             Otri neighbortri = default(Otri);
             Osub testsym = default(Osub);
             BadSubseg encroachedseg;
-            double dotproduct;
+            float dotproduct;
             int encroached;
             int sides;
             Vertex eorg, edest, eapex;
@@ -358,14 +358,14 @@ namespace TriangleNet
             Vertex base1, base2;
             Vertex org1, dest1, org2, dest2;
             Vertex joinvertex;
-            double dxod, dyod, dxda, dyda, dxao, dyao;
-            double dxod2, dyod2, dxda2, dyda2, dxao2, dyao2;
-            double apexlen, orglen, destlen, minedge;
-            double angle;
-            double area;
-            double dist1, dist2;
+            float dxod, dyod, dxda, dyda, dxao, dyao;
+            float dxod2, dyod2, dxda2, dyda2, dxao2, dyao2;
+            float apexlen, orglen, destlen, minedge;
+            float angle;
+            float area;
+            float dist1, dist2;
 
-            double maxangle;
+            float maxangle;
 
             torg = testtri.Org();
             tdest = testtri.Dest();
@@ -424,7 +424,7 @@ namespace TriangleNet
             if (behavior.VarArea || behavior.fixedArea || behavior.Usertest)
             {
                 // Check whether the area is larger than permitted.
-                area = 0.5 * (dxod * dyda - dyod * dxda);
+                area = 0.5f * (dxod * dyda - dyod * dxda);
                 if (behavior.fixedArea && (area > behavior.MaxArea))
                 {
                     // Add this triangle to the list of bad triangles.
@@ -457,21 +457,21 @@ namespace TriangleNet
                 // The edge opposite the apex is longest.
                 // maxedge = apexlen;
                 // Find the cosine of the angle at the apex.
-                maxangle = (orglen + destlen - apexlen) / (2 * Math.Sqrt(orglen * destlen));
+                maxangle = (orglen + destlen - apexlen) / (2 * UnityEngine.Mathf.Sqrt(orglen * destlen));
             }
             else if (orglen > destlen)
             {
                 // The edge opposite the origin is longest.
                 // maxedge = orglen;
                 // Find the cosine of the angle at the origin.
-                maxangle = (apexlen + destlen - orglen) / (2 * Math.Sqrt(apexlen * destlen));
+                maxangle = (apexlen + destlen - orglen) / (2 * UnityEngine.Mathf.Sqrt(apexlen * destlen));
             }
             else
             {
                 // The edge opposite the destination is longest.
                 // maxedge = destlen;
                 // Find the cosine of the angle at the destination.
-                maxangle = (apexlen + orglen - destlen) / (2 * Math.Sqrt(apexlen * orglen));
+                maxangle = (apexlen + orglen - destlen) / (2 * UnityEngine.Mathf.Sqrt(apexlen * orglen));
             }
 
             // Check whether the angle is smaller than permitted.
@@ -588,9 +588,9 @@ namespace TriangleNet
             Vertex eorg, edest, eapex;
             Vertex newvertex;
             InsertVertexResult success;
-            double segmentlength, nearestpoweroftwo;
-            double split;
-            double multiplier, divisor;
+            float segmentlength, nearestpoweroftwo;
+            float split;
+            float multiplier, divisor;
             bool acuteorg, acuteorg2, acutedest, acutedest2;
 
             // Note that steinerleft == -1 if an unlimited number
@@ -690,31 +690,31 @@ namespace TriangleNet
                     // with another adjacent segment.
                     if (acuteorg || acutedest)
                     {
-                        segmentlength = Math.Sqrt((edest.x - eorg.x) * (edest.x - eorg.x) +
+                        segmentlength = UnityEngine.Mathf.Sqrt((edest.x - eorg.x) * (edest.x - eorg.x) +
                                              (edest.y - eorg.y) * (edest.y - eorg.y));
                         // Find the power of two that most evenly splits the segment.
                         // The worst case is a 2:1 ratio between subsegment lengths.
-                        nearestpoweroftwo = 1.0;
-                        while (segmentlength > 3.0 * nearestpoweroftwo)
+                        nearestpoweroftwo = 1.0f;
+                        while (segmentlength > 3.0f * nearestpoweroftwo)
                         {
-                            nearestpoweroftwo *= 2.0;
+                            nearestpoweroftwo *= 2.0f;
                         }
-                        while (segmentlength < 1.5 * nearestpoweroftwo)
+                        while (segmentlength < 1.5f * nearestpoweroftwo)
                         {
-                            nearestpoweroftwo *= 0.5;
+                            nearestpoweroftwo *= 0.5f;
                         }
                         // Where do we split the segment?
                         split = nearestpoweroftwo / segmentlength;
                         if (acutedest)
                         {
-                            split = 1.0 - split;
+                            split = 1.0f - split;
                         }
                     }
                     else
                     {
                         // If we're not worried about adjacent segments, split
                         // this segment in the middle.
-                        split = 0.5;
+                        split = 0.5f;
                     }
 
                     // Create the new vertex (interpolate coordinates).
@@ -750,7 +750,7 @@ namespace TriangleNet
                         {
                             multiplier = multiplier / divisor;
                             // Watch out for NANs.
-                            if (!double.IsNaN(multiplier))
+                            if (!float.IsNaN(multiplier))
                             {
                                 newvertex.x += multiplier * (edest.y - eorg.y);
                                 newvertex.y += multiplier * (eorg.x - edest.x);
@@ -820,7 +820,7 @@ namespace TriangleNet
             Otri badotri = default(Otri);
             Vertex borg, bdest, bapex;
             Point newloc; // Location of the new vertex
-            double xi = 0, eta = 0;
+            float xi = 0, eta = 0;
             InsertVertexResult success;
             bool errorflag;
 

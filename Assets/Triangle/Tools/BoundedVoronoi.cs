@@ -103,7 +103,7 @@ namespace TriangleNet.Tools
         private void ComputeCircumCenters()
         {
             Otri tri = default(Otri);
-            double xi = 0, eta = 0;
+            float xi = 0, eta = 0;
             Point pt;
 
             // Compue triangle circumcenters
@@ -604,12 +604,12 @@ namespace TriangleNet.Tools
         {
             p = null;
 
-            double Ax = p1.X, Ay = p1.Y;
-            double Bx = p2.X, By = p2.Y;
-            double Cx = p3.X, Cy = p3.Y;
-            double Dx = p4.X, Dy = p4.Y;
+            float Ax = p1.X, Ay = p1.Y;
+            float Bx = p2.X, By = p2.Y;
+            float Cx = p3.X, Cy = p3.Y;
+            float Dx = p4.X, Dy = p4.Y;
 
-            double distAB, theCos, theSin, newX, ABpos;
+            float distAB, theCos, theSin, newX, ABpos;
 
             //  Fail if either line segment is zero-length.
             if (Ax == Bx && Ay == By || Cx == Dx && Cy == Dy) return false;
@@ -627,7 +627,7 @@ namespace TriangleNet.Tools
             Dx -= Ax; Dy -= Ay;
 
             //  Discover the length of segment A-B.
-            distAB = Math.Sqrt(Bx * Bx + By * By);
+            distAB = UnityEngine.Mathf.Sqrt(Bx * Bx + By * By);
 
             //  (2) Rotate the system so that point B is on the positive X axis.
             theCos = Bx / distAB;

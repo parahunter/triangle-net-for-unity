@@ -100,7 +100,7 @@ namespace TriangleNet.Tools
         private void ComputeCircumCenters()
         {
             Otri tri = default(Otri);
-            double xi = 0, eta = 0;
+            float xi = 0, eta = 0;
             Point pt;
 
             // Compue triangle circumcenters
@@ -116,7 +116,7 @@ namespace TriangleNet.Tools
                 bounds.Update(pt.x, pt.y);
             }
 
-            double ds = Math.Max(bounds.Width, bounds.Height);
+            float ds = UnityEngine.Mathf.Max(bounds.Width, bounds.Height);
             bounds.Scale(ds, ds);
         }
 
@@ -258,18 +258,18 @@ namespace TriangleNet.Tools
             region.Add(vpoints);
         }
 
-        private bool BoxRayIntersection(Point pt, double dx, double dy, out Vertex intersect)
+        private bool BoxRayIntersection(Point pt, float dx, float dy, out Vertex intersect)
         {
-            double x = pt.X;
-            double y = pt.Y;
+            float x = pt.X;
+            float y = pt.Y;
 
-            double t1, x1, y1, t2, x2, y2;
+            float t1, x1, y1, t2, x2, y2;
 
             // Bounding box
-            double minX = bounds.Xmin;
-            double maxX = bounds.Xmax;
-            double minY = bounds.Ymin;
-            double maxY = bounds.Ymax;
+            float minX = bounds.Xmin;
+            float maxX = bounds.Xmax;
+            float minY = bounds.Ymin;
+            float maxY = bounds.Ymax;
 
             // Check if point is inside the bounds
             if (x < minX || x > maxX || y < minY || y > maxY)
@@ -296,7 +296,7 @@ namespace TriangleNet.Tools
             else
             {
                 // Line going straight up or down: no intersection possible
-                t1 = double.MaxValue;
+                t1 = float.MaxValue;
                 x1 = y1 = 0;
             }
 
@@ -318,7 +318,7 @@ namespace TriangleNet.Tools
             else
             {
                 // Horizontal line: no intersection possible
-                t2 = double.MaxValue;
+                t2 = float.MaxValue;
                 x2 = y2 = 0;
             }
 

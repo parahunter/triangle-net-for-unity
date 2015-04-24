@@ -111,7 +111,7 @@ namespace TriangleNet
             Otri backtracktri = default(Otri);
             Osub checkedge = default(Osub);
             Vertex forg, fdest, fapex;
-            double orgorient, destorient;
+            float orgorient, destorient;
             bool moveleft;
 
             // Where are we?
@@ -252,8 +252,8 @@ namespace TriangleNet
         {
             Otri sampletri = default(Otri);
             Vertex torg, tdest;
-            double searchdist, dist;
-            double ahead;
+            float searchdist, dist;
+            float ahead;
 
             // Record the distance from the suggested starting triangle to the
             // point we seek.

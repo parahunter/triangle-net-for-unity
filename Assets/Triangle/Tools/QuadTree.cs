@@ -50,7 +50,7 @@ namespace TriangleNet.Tools
             root.CreateSubRegion(++currentDepth);
         }
 
-        public ITriangle Query(double x, double y)
+        public ITriangle Query(float x, float y)
         {
             var point = new Point(x, y);
             var indices = root.FindTriangles(point);
@@ -99,8 +99,8 @@ namespace TriangleNet.Tools
             // s = d2 * c1 / d0 * c1
             // v = d2 * c0 / d1 * c0
 
-            double s = DotProduct(d2, c1) / DotProduct(d0, c1);
-            double v = DotProduct(d2, c0) / DotProduct(d1, c0);
+            float s = DotProduct(d2, c1) / DotProduct(d0, c1);
+            float v = DotProduct(d2, c0) / DotProduct(d1, c0);
 
             if (s >= 0 && v >= 0 && ((s + v) <= 1))
             {
@@ -110,7 +110,7 @@ namespace TriangleNet.Tools
             return false;
         }
 
-        internal static double DotProduct(Point p, Point q)
+        internal static float DotProduct(Point p, Point q)
         {
             return p.X * q.X + p.Y * q.Y;
         }
@@ -127,8 +127,6 @@ namespace TriangleNet.Tools
         const int SE = 1;
         const int NW = 2;
         const int NE = 3;
-
-        const double EPS = 1e-6;
 
         static readonly byte[] BITVECTOR = { 0x1, 0x2, 0x4, 0x8 };
 
@@ -261,7 +259,7 @@ namespace TriangleNet.Tools
 
             int k = 2;
 
-            double dx, dy;
+            float dx, dy;
             // Iterate through all triangle laterals and find bounding box intersections
             for (int i = 0; i < 3; k = i++)
             {
@@ -279,15 +277,15 @@ namespace TriangleNet.Tools
             }
         }
 
-        void FindIntersectionsWithX(double dx, double dy, Point[] triangle, int index, int k)
+        void FindIntersectionsWithX(float dx, float dy, Point[] triangle, int index, int k)
         {
             // find intersection with plane x = m_pivot.dX
-            double t = (pivot.X - triangle[k].X) / dx;
+            float t = (pivot.X - triangle[k].X) / dx;
 
-            if (t < (1 + EPS) && t > -EPS)
+            if (t < (1 + UnityEngine.Mathf.Epsilon) && t > -UnityEngine.Mathf.Epsilon)
             {
                 // we have an intersection
-                double yComponent = triangle[k].Y + t * dy;
+                float yComponent = triangle[k].Y + t * dy;
 
                 if (yComponent < pivot.Y)
                 {
@@ -305,10 +303,10 @@ namespace TriangleNet.Tools
             }
             // find intersection with plane x = m_boundingBox[0].dX
             t = (bounds.Xmin - triangle[k].X) / dx;
-            if (t < (1 + EPS) && t > -EPS)
+            if (t < (1 + UnityEngine.Mathf.Epsilon) && t > -UnityEngine.Mathf.Epsilon)
             {
                 // we have an intersection
-                double yComponent = triangle[k].Y + t * dy;
+                float yComponent = triangle[k].Y + t * dy;
 
                 if (yComponent <= pivot.Y && yComponent >= bounds.Ymin)
                 {
@@ -321,10 +319,10 @@ namespace TriangleNet.Tools
             }
             // find intersection with plane x = m_boundingBox[1].dX
             t = (bounds.Xmax - triangle[k].X) / dx;
-            if (t < (1 + EPS) && t > -EPS)
+            if (t < (1 + UnityEngine.Mathf.Epsilon) && t > -UnityEngine.Mathf.Epsilon)
             {
                 // we have an intersection
-                double yComponent = triangle[k].Y + t * dy;
+                float yComponent = triangle[k].Y + t * dy;
 
                 if (yComponent <= pivot.Y && yComponent >= bounds.Ymin)
                 {
@@ -337,14 +335,14 @@ namespace TriangleNet.Tools
             }
         }
 
-        void FindIntersectionsWithY(double dx, double dy, Point[] triangle, int index, int k)
+        void FindIntersectionsWithY(float dx, float dy, Point[] triangle, int index, int k)
         {
             // find intersection with plane y = m_pivot.dY
-            double t = (pivot.Y - triangle[k].Y) / (dy);
-            if (t < (1 + EPS) && t > -EPS)
+            float t = (pivot.Y - triangle[k].Y) / (dy);
+            if (t < (1 + UnityEngine.Mathf.Epsilon) && t > -UnityEngine.Mathf.Epsilon)
             {
                 // we have an intersection
-                double xComponent = triangle[k].X + t * (dy);
+                float xComponent = triangle[k].X + t * (dy);
 
                 if (xComponent > pivot.X)
                 {
@@ -362,10 +360,10 @@ namespace TriangleNet.Tools
             }
             // find intersection with plane y = m_boundingBox[0].dY
             t = (bounds.Ymin - triangle[k].Y) / dy;
-            if (t < (1 + EPS) && t > -EPS)
+            if (t < (1 + UnityEngine.Mathf.Epsilon) && t > -UnityEngine.Mathf.Epsilon)
             {
                 // we have an intersection
-                double xComponent = triangle[k].X + t * dx;
+                float xComponent = triangle[k].X + t * dx;
 
                 if (xComponent <= pivot.X && xComponent >= bounds.Xmin)
                 {
@@ -378,10 +376,10 @@ namespace TriangleNet.Tools
             }
             // find intersection with plane y = m_boundingBox[1].dY
             t = (bounds.Ymax - triangle[k].Y) / dy;
-            if (t < (1 + EPS) && t > -EPS)
+            if (t < (1 + UnityEngine.Mathf.Epsilon) && t > -UnityEngine.Mathf.Epsilon)
             {
                 // we have an intersection
-                double xComponent = triangle[k].X + t * dx;
+                float xComponent = triangle[k].X + t * dx;
 
                 if (xComponent <= pivot.X && xComponent >= bounds.Xmin)
                 {

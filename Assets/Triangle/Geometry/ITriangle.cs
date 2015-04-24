@@ -73,7 +73,7 @@ namespace TriangleNet.Geometry
         /// <summary>
         /// Triangle area constraint.
         /// </summary>
-        double Area { get; set; }
+        float Area { get; set; }
 
         /// <summary>
         /// Region ID the triangle belongs to.

@@ -61,17 +61,17 @@ namespace TriangleNet.IO
         /// <param name="marks">Number of point markers (0 or 1)</param>
         static void ReadVertex(InputGeometry data, int index, string[] line, int attributes, int marks)
         {
-            double x = double.Parse(line[1], nfi);
-            double y = double.Parse(line[2], nfi);
+            float x = float.Parse(line[1], nfi);
+            float y = float.Parse(line[2], nfi);
             int mark = 0;
-            double[] attribs = attributes == 0 ? null : new double[attributes];
+            float[] attribs = attributes == 0 ? null : new float[attributes];
 
             // Read the vertex attributes.
             for (int j = 0; j < attributes; j++)
             {
                 if (line.Length > 3 + j)
                 {
-                    attribs[j] = double.Parse(line[3 + j]);
+                    attribs[j] = float.Parse(line[3 + j]);
                 }
             }
 
@@ -428,8 +428,8 @@ namespace TriangleNet.IO
                             throw new Exception("Invalid hole.");
                         }
 
-                        data.AddHole(double.Parse(line[1], nfi),
-                            double.Parse(line[2], nfi));
+                        data.AddHole(float.Parse(line[1], nfi),
+                            float.Parse(line[2], nfi));
                     }
                 }
 
@@ -454,8 +454,8 @@ namespace TriangleNet.IO
 
                             data.AddRegion(
                                 // Region x and y
-                                double.Parse(line[1], nfi),
-                                double.Parse(line[2], nfi),
+                                float.Parse(line[1], nfi),
+                                float.Parse(line[2], nfi),
                                 // Region id
                                 int.Parse(line[3]));
                         }
@@ -578,9 +578,9 @@ namespace TriangleNet.IO
         /// <param name="areafilename"></param>
         /// <param name="intriangles"></param>
         /// <param name="data"></param>
-        private static double[] ReadAreaFile(string areafilename, int intriangles)
+        private static float[] ReadAreaFile(string areafilename, int intriangles)
         {
-            double[] data = null;
+            float[] data = null;
 
             using (StreamReader reader = new StreamReader(areafilename))
             {
@@ -598,7 +598,7 @@ namespace TriangleNet.IO
                     return null;
                 }
 
-                data = new double[intriangles];
+                data = new float[intriangles];
 
                 // Read area constraints.
                 for (int i = 0; i < intriangles; i++)
@@ -613,7 +613,7 @@ namespace TriangleNet.IO
                         throw new Exception("Triangle has no nodes.");
                     }
 
-                    data[i] = double.Parse(line[1], nfi);
+                    data[i] = float.Parse(line[1], nfi);
                 }
             }
 

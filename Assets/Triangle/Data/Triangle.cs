@@ -31,7 +31,7 @@ namespace TriangleNet.Data
         internal Vertex[] vertices;
         internal Osub[] subsegs;
         internal int region;
-        internal double area;
+        internal float area;
         internal bool infected;
 
         public Triangle()
@@ -156,7 +156,7 @@ namespace TriangleNet.Data
         /// <summary>
         /// Gets the triangle area constraint.
         /// </summary>
-        public double Area
+        public float Area
         {
             get { return this.area; }
             set { this.area = value; }

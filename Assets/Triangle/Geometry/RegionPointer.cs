@@ -24,7 +24,7 @@ namespace TriangleNet.Geometry
         /// <param name="x">X coordinate of the region.</param>
         /// <param name="y">Y coordinate of the region.</param>
         /// <param name="id">Region id.</param>
-        public RegionPointer(double x, double y, int id)
+        public RegionPointer(float x, float y, int id)
         {
             this.point = new Point(x, y);
             this.id = id;

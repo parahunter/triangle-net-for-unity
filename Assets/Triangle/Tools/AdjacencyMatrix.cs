@@ -71,8 +71,8 @@ namespace TriangleNet.Tools
                 for (j = adj_row[i]; j <= adj_row[i + 1] - 1; j++)
                 {
                     col = adj[j - 1];
-                    band_lo = Math.Max(band_lo, i - col);
-                    band_hi = Math.Max(band_hi, col - i);
+                    band_lo = UnityEngine.Mathf.Max(band_lo, i - col);
+                    band_hi = UnityEngine.Mathf.Max(band_hi, col - i);
                 }
             }
 

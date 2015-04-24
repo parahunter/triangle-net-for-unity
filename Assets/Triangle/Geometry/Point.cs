@@ -17,22 +17,22 @@ namespace TriangleNet.Geometry
     public class Point : IComparable<Point>, IEquatable<Point>
     {
         internal int id;
-        internal double x;
-        internal double y;
+        internal float x;
+        internal float y;
         internal int mark;
-        internal double[] attributes;
+        internal float[] attributes;
 
         public Point()
             : this(0, 0, 0)
         {
         }
 
-        public Point(double x, double y)
+        public Point(float x, float y)
             : this(x, y, 0)
         {
         }
 
-        public Point(double x, double y, int mark)
+        public Point(float x, float y, int mark)
         {
             this.x = x;
             this.y = y;
@@ -52,7 +52,7 @@ namespace TriangleNet.Geometry
         /// <summary>
         /// Gets the vertex x coordinate.
         /// </summary>
-        public double X
+        public float X
         {
             get { return this.x; }
         }
@@ -60,7 +60,7 @@ namespace TriangleNet.Geometry
         /// <summary>
         /// Gets the vertex y coordinate.
         /// </summary>
-        public double Y
+        public float Y
         {
             get { return this.y; }
         }
@@ -76,7 +76,7 @@ namespace TriangleNet.Geometry
         /// <summary>
         /// Gets the vertex attributes (may be null).
         /// </summary>
-        public double[] Attributes
+        public float[] Attributes
         {
             get { return this.attributes; }
         }

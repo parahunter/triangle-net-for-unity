@@ -54,13 +54,13 @@ namespace TriangleNet.Smoothing
 
             var cells = voronoi.Regions;
 
-            double x, y;
+            float x, y;
             int n;
 
             foreach (var cell in cells)
             {
                 n = 0;
-                x = y = 0.0;
+                x = y = 0.0f;
                 foreach (var p in cell.Vertices)
                 {
                     n++;

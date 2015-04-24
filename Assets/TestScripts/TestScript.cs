@@ -25,19 +25,19 @@ public class TestScript : MonoBehaviour
         geometry = new InputGeometry();
         List<Point> points = new List<Point>();
 
-        points.Add(new Point((double)distance, (double)distance));
-        points.Add(new Point((double)distance, (double)-distance));
-        points.Add(new Point((double)-distance, (double)-distance));
-        points.Add(new Point((double)-distance, (double)distance));
+        points.Add(new Point((float)distance, (float)distance));
+        points.Add(new Point((float)distance, (float)-distance));
+        points.Add(new Point((float)-distance, (float)-distance));
+        points.Add(new Point((float)-distance, (float)distance));
 
         geometry.AddRing(points, 0);
 
         List<Point> hole = new List<Point>();
-        hole.Add(new Point((double)boxWidth, (double)boxWidth));
-        hole.Add(new Point((double)boxWidth, (double)0));
-        hole.Add(new Point((double)boxWidth, (double)-boxWidth));
-        hole.Add(new Point((double)-boxWidth, (double)-boxWidth));
-        hole.Add(new Point((double)-boxWidth, (double)boxWidth));
+        hole.Add(new Point((float)boxWidth, (float)boxWidth));
+        hole.Add(new Point((float)boxWidth, (float)0));
+        hole.Add(new Point((float)boxWidth, (float)-boxWidth));
+        hole.Add(new Point((float)-boxWidth, (float)-boxWidth));
+        hole.Add(new Point((float)-boxWidth, (float)boxWidth));
         geometry.AddRingAsHole(hole, 1);
 
         for (float offsetX = -distance; offsetX < distance; offsetX += boxDistance)
@@ -56,8 +56,8 @@ public class TestScript : MonoBehaviour
                 if (Mathf.Abs(pos.x) < boxWidth && Mathf.Abs(pos.y) < boxWidth)
                     continue;
 
-                //points.Add(new Point((double)pos.x, (double)pos.y));
-                geometry.AddPoint( (double)pos.x, (double)pos.y, 0);
+                //points.Add(new Point((float)pos.x, (float)pos.y));
+                geometry.AddPoint( (float)pos.x, (float)pos.y, 0);
             }
         }
 
@@ -100,6 +100,9 @@ public class TestScript : MonoBehaviour
 
             triangleIndex += 3;
         }
+
+        print("vertices: " + vertices.Count);
+
 
         mesh = new Mesh();
         mesh.vertices = vertices.ToArray();

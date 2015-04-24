@@ -31,23 +31,23 @@ namespace TriangleNet
         int noBisect = 0;
         int steiner = -1;
 
-        double minAngle = 0.0;
-        double maxAngle = 0.0;
-        double maxArea = -1.0;
+        float minAngle = 0.0f;
+        float maxAngle = 0.0f;
+        float maxArea = -1.0f;
 
         internal bool fixedArea = false;
         internal bool useSegments = true;
         internal bool useRegions = false;
-        internal double goodAngle = 0.0;
-        internal double maxGoodAngle = 0.0;
-        internal double offconstant = 0.0;
+        internal float goodAngle = 0.0f;
+        internal float maxGoodAngle = 0.0f;
+        internal float offconstant = 0.0f;
 
         #endregion
 
         /// <summary>
         /// Creates an instance of the Behavior class.
         /// </summary>
-        public Behavior(bool quality = false, double minAngle = 20.0)
+        public Behavior(bool quality = false, float minAngle = 20.0f)
         {
             if (quality)
             {
@@ -82,16 +82,16 @@ namespace TriangleNet
             }
 
             this.useSegments = this.Poly || this.Quality || this.Convex;
-            this.goodAngle = Math.Cos(this.MinAngle * Math.PI / 180.0);
-            this.maxGoodAngle = Math.Cos(this.MaxAngle * Math.PI / 180.0);
+            this.goodAngle = UnityEngine.Mathf.Cos(this.MinAngle * UnityEngine.Mathf.PI / 180.0f);
+            this.maxGoodAngle = UnityEngine.Mathf.Cos(this.MaxAngle * UnityEngine.Mathf.PI / 180.0f);
 
             if (this.goodAngle == 1.0)
             {
-                this.offconstant = 0.0;
+                this.offconstant = 0.0f;
             }
             else
             {
-                this.offconstant = 0.475 * Math.Sqrt((1.0 + this.goodAngle) / (1.0 - this.goodAngle));
+                this.offconstant = 0.475f * UnityEngine.Mathf.Sqrt((1.0f + this.goodAngle) / (1.0f - this.goodAngle));
             }
 
             this.goodAngle *= this.goodAngle;
@@ -132,7 +132,7 @@ namespace TriangleNet
         /// <summary>
         /// Minimum angle constraint.
         /// </summary>
-        public double MinAngle
+        public float MinAngle
         {
             get { return minAngle; }
             set { minAngle = value; Update(); }
@@ -141,7 +141,7 @@ namespace TriangleNet
         /// <summary>
         /// Maximum angle constraint.
         /// </summary>
-        public double MaxAngle
+        public float MaxAngle
         {
             get { return maxAngle; }
             set { maxAngle = value; Update(); }
@@ -150,7 +150,7 @@ namespace TriangleNet
         /// <summary>
         /// Maximum area constraint.
         /// </summary>
-        public double MaxArea
+        public float MaxArea
         {
             get { return maxArea; }
             set

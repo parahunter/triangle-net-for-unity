@@ -20,8 +20,6 @@ namespace TriangleNet
     /// </remarks>
     class NewLocation
     {
-        const double EPS = 1e-50;
-
         Mesh mesh;
         Behavior behavior;
 
@@ -43,7 +41,7 @@ namespace TriangleNet
         /// <param name="badotri"></param>
         /// <returns></returns>
         public Point FindLocation(Vertex torg, Vertex tdest, Vertex tapex,
-            ref double xi, ref double eta, bool offcenter, Otri badotri)
+            ref float xi, ref float eta, bool offcenter, Otri badotri)
         {
             // Based on using -U switch, call the corresponding function
             if (behavior.MaxAngle == 0.0)
@@ -67,23 +65,23 @@ namespace TriangleNet
         /// <param name="offcenter"></param>
         /// <param name="badotri"></param>
         private Point FindNewLocationWithoutMaxAngle(Vertex torg, Vertex tdest, Vertex tapex,
-            ref double xi, ref double eta, bool offcenter, Otri badotri)
+            ref float xi, ref float eta, bool offcenter, Otri badotri)
         {
-            double offconstant = behavior.offconstant;
+            float offconstant = behavior.offconstant;
 
             // for calculating the distances of the edges
-            double xdo, ydo, xao, yao, xda, yda;
-            double dodist, aodist, dadist;
+            float xdo, ydo, xao, yao, xda, yda;
+            float dodist, aodist, dadist;
             // for exact calculation
-            double denominator;
-            double dx, dy, dxoff, dyoff;
+            float denominator;
+            float dx, dy, dxoff, dyoff;
 
             ////////////////////////////// HALE'S VARIABLES //////////////////////////////
             // keeps the difference of coordinates edge 
-            double xShortestEdge = 0, yShortestEdge = 0, xMiddleEdge, yMiddleEdge, xLongestEdge, yLongestEdge;
+            float xShortestEdge = 0, yShortestEdge = 0, xMiddleEdge, yMiddleEdge, xLongestEdge, yLongestEdge;
 
             // keeps the square of edge lengths
-            double shortestEdgeDist = 0, middleEdgeDist = 0, longestEdgeDist = 0;
+            float shortestEdgeDist = 0, middleEdgeDist = 0, longestEdgeDist = 0;
 
             // keeps the vertices according to the angle incident to that vertex in a triangle
             Point smallestAngleCorner, middleAngleCorner, largestAngleCorner;
@@ -96,16 +94,16 @@ namespace TriangleNet
             // keeps if bad triangle is almost good or not
             int almostGood = 0;
             // keeps the cosine of the largest angle
-            double cosMaxAngle;
+            float cosMaxAngle;
             bool isObtuse; // 1: obtuse 0: nonobtuse
             // keeps the radius of petal
-            double petalRadius;
+            float petalRadius;
             // for calculating petal center
-            double xPetalCtr_1, yPetalCtr_1, xPetalCtr_2, yPetalCtr_2, xPetalCtr, yPetalCtr, xMidOfShortestEdge, yMidOfShortestEdge;
-            double dxcenter1, dycenter1, dxcenter2, dycenter2;
+            float xPetalCtr_1, yPetalCtr_1, xPetalCtr_2, yPetalCtr_2, xPetalCtr, yPetalCtr, xMidOfShortestEdge, yMidOfShortestEdge;
+            float dxcenter1, dycenter1, dxcenter2, dycenter2;
             // for finding neighbor
             Otri neighborotri = default(Otri);
-            double[] thirdPoint = new double[2];
+            float[] thirdPoint = new float[2];
             //int neighborNotFound = -1;
             bool neighborNotFound;
             // for keeping the vertices of the neighbor triangle
@@ -113,28 +111,28 @@ namespace TriangleNet
             Vertex neighborvertex_2;
             Vertex neighborvertex_3;
             // dummy variables 
-            double xi_tmp = 0, eta_tmp = 0;
+            float xi_tmp = 0, eta_tmp = 0;
             //vertex thirdVertex;
             // for petal intersection
-            double vector_x, vector_y, xMidOfLongestEdge, yMidOfLongestEdge, inter_x, inter_y;
-            double[] p = new double[5], voronoiOrInter = new double[4];
+            float vector_x, vector_y, xMidOfLongestEdge, yMidOfLongestEdge, inter_x, inter_y;
+            float[] p = new float[5], voronoiOrInter = new float[4];
             bool isCorrect;
 
             // for vector calculations in perturbation
-            double ax, ay, d;
-            double pertConst = 0.06; // perturbation constant
+            float ax, ay, d;
+            float pertConst = 0.06f; // perturbation constant
 
-            double lengthConst = 1; // used at comparing circumcenter's distance to proposed point's distance
-            double justAcute = 1; // used for making the program working for one direction only
+            float lengthConst = 1; // used at comparing circumcenter's distance to proposed point's distance
+            float justAcute = 1; // used for making the program working for one direction only
             // for smoothing
             int relocated = 0;// used to differentiate between calling the deletevertex and just proposing a steiner point
-            double[] newloc = new double[2];   // new location suggested by smoothing
-            double origin_x = 0, origin_y = 0; // for keeping torg safe
+            float[] newloc = new float[2];   // new location suggested by smoothing
+            float origin_x = 0, origin_y = 0; // for keeping torg safe
             Otri delotri; // keeping the original orientation for relocation process
             // keeps the first and second direction suggested points
-            double dxFirstSuggestion, dyFirstSuggestion, dxSecondSuggestion, dySecondSuggestion;
+            float dxFirstSuggestion, dyFirstSuggestion, dxSecondSuggestion, dySecondSuggestion;
             // second direction variables
-            double xMidOfMiddleEdge, yMidOfMiddleEdge;
+            float xMidOfMiddleEdge, yMidOfMiddleEdge;
             ////////////////////////////// END OF HALE'S VARIABLES //////////////////////////////
 
             Statistic.CircumcenterCount++;
@@ -154,14 +152,14 @@ namespace TriangleNet
             // checking if the user wanted exact arithmetic or not
             if (Behavior.NoExact)
             {
-                denominator = 0.5 / (xdo * yao - xao * ydo);
+                denominator = 0.5f / (xdo * yao - xao * ydo);
             }
             else
             {
                 // Use the counterclockwise() routine to ensure a positive (and
                 //   reasonably accurate) result, avoiding any possibility of
                 //   division by zero.
-                denominator = 0.5 / Primitives.CounterClockwise(tdest, tapex, torg);
+                denominator = 0.5f / Primitives.CounterClockwise(tdest, tapex, torg);
                 // Don't count the above as an orientation test.
                 Statistic.CounterClockwiseCount--;
             }
@@ -289,14 +287,14 @@ namespace TriangleNet
 
             }// end of switch	
             // check for offcenter condition
-            if (offcenter && (offconstant > 0.0))
+            if (offcenter && (offconstant > 0.0f))
             {
                 // origin has the smallest angle
                 if (orientation == 213 || orientation == 231)
                 {
                     // Find the position of the off-center, as described by Alper Ungor.
-                    dxoff = 0.5 * xShortestEdge - offconstant * yShortestEdge;
-                    dyoff = 0.5 * yShortestEdge + offconstant * xShortestEdge;
+                    dxoff = 0.5f * xShortestEdge - offconstant * yShortestEdge;
+                    dyoff = 0.5f * yShortestEdge + offconstant * xShortestEdge;
                     // If the off-center is closer to destination than the
                     //   circumcenter, use the off-center instead.
                     /// doubleLY BAD CASE ///			
@@ -316,8 +314,8 @@ namespace TriangleNet
                 else if (orientation == 123 || orientation == 132)
                 {
                     // Find the position of the off-center, as described by Alper Ungor.
-                    dxoff = 0.5 * xShortestEdge + offconstant * yShortestEdge;
-                    dyoff = 0.5 * yShortestEdge - offconstant * xShortestEdge;
+                    dxoff = 0.5f * xShortestEdge + offconstant * yShortestEdge;
+                    dyoff = 0.5f * yShortestEdge - offconstant * xShortestEdge;
                     // If the off-center is closer to the origin than the
                     //   circumcenter, use the off-center instead.
                     /// doubleLY BAD CASE ///
@@ -336,8 +334,8 @@ namespace TriangleNet
                 else
                 {//orientation == 312 || orientation == 321 
                     // Find the position of the off-center, as described by Alper Ungor.
-                    dxoff = 0.5 * xShortestEdge - offconstant * yShortestEdge;
-                    dyoff = 0.5 * yShortestEdge + offconstant * xShortestEdge;
+                    dxoff = 0.5f * xShortestEdge - offconstant * yShortestEdge;
+                    dyoff = 0.5f * yShortestEdge + offconstant * xShortestEdge;
                     // If the off-center is closer to the origin than the
                     //   circumcenter, use the off-center instead.
                     /// doubleLY BAD CASE ///
@@ -358,13 +356,13 @@ namespace TriangleNet
             {
 
                 /// calculate cosine of largest angle	///	
-                cosMaxAngle = (middleEdgeDist + shortestEdgeDist - longestEdgeDist) / (2 * Math.Sqrt(middleEdgeDist) * Math.Sqrt(shortestEdgeDist));
-                if (cosMaxAngle < 0.0)
+                cosMaxAngle = (middleEdgeDist + shortestEdgeDist - longestEdgeDist) / (2 * UnityEngine.Mathf.Sqrt(middleEdgeDist) * UnityEngine.Mathf.Sqrt(shortestEdgeDist));
+                if (cosMaxAngle < 0.0f)
                 {
                     // obtuse
                     isObtuse = true;
                 }
-                else if (Math.Abs(cosMaxAngle - 0.0) <= EPS)
+                else if (UnityEngine.Mathf.Abs(cosMaxAngle - 0.0f) <= UnityEngine.Mathf.Epsilon)
                 {
                     // right triangle (largest angle is 90 degrees)
                     isObtuse = true;
@@ -410,22 +408,22 @@ namespace TriangleNet
                     // calculate radius of the petal according to angle constraint
                     // first find the visible region, PETAL
                     // find the center of the circle and radius
-                    petalRadius = Math.Sqrt(shortestEdgeDist) / (2 * Math.Sin(behavior.MinAngle * Math.PI / 180.0));
+                    petalRadius = UnityEngine.Mathf.Sqrt(shortestEdgeDist) / (2f * UnityEngine.Mathf.Sin(behavior.MinAngle * UnityEngine.Mathf.PI / 180.0f));
                     /// compute two possible centers of the petal ///
                     // finding the center
                     // first find the middle point of smallest edge
-                    xMidOfShortestEdge = (middleAngleCorner.x + largestAngleCorner.x) / 2.0;
-                    yMidOfShortestEdge = (middleAngleCorner.y + largestAngleCorner.y) / 2.0;
+                    xMidOfShortestEdge = (middleAngleCorner.x + largestAngleCorner.x) / 2.0f;
+                    yMidOfShortestEdge = (middleAngleCorner.y + largestAngleCorner.y) / 2.0f;
                     // two possible centers
-                    xPetalCtr_1 = xMidOfShortestEdge + Math.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (middleAngleCorner.y -
-                        largestAngleCorner.y) / Math.Sqrt(shortestEdgeDist);
-                    yPetalCtr_1 = yMidOfShortestEdge + Math.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (largestAngleCorner.x -
-                        middleAngleCorner.x) / Math.Sqrt(shortestEdgeDist);
+                    xPetalCtr_1 = xMidOfShortestEdge + UnityEngine.Mathf.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (middleAngleCorner.y -
+                        largestAngleCorner.y) / UnityEngine.Mathf.Sqrt(shortestEdgeDist);
+                    yPetalCtr_1 = yMidOfShortestEdge + UnityEngine.Mathf.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (largestAngleCorner.x -
+                        middleAngleCorner.x) / UnityEngine.Mathf.Sqrt(shortestEdgeDist);
 
-                    xPetalCtr_2 = xMidOfShortestEdge - Math.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (middleAngleCorner.y -
-                        largestAngleCorner.y) / Math.Sqrt(shortestEdgeDist);
-                    yPetalCtr_2 = yMidOfShortestEdge - Math.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (largestAngleCorner.x -
-                        middleAngleCorner.x) / Math.Sqrt(shortestEdgeDist);
+                    xPetalCtr_2 = xMidOfShortestEdge - UnityEngine.Mathf.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (middleAngleCorner.y -
+                        largestAngleCorner.y) / UnityEngine.Mathf.Sqrt(shortestEdgeDist);
+                    yPetalCtr_2 = yMidOfShortestEdge - UnityEngine.Mathf.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (largestAngleCorner.x -
+                        middleAngleCorner.x) / UnityEngine.Mathf.Sqrt(shortestEdgeDist);
                     // find the correct circle since there will be two possible circles
                     // calculate the distance to smallest angle corner
                     dxcenter1 = (xPetalCtr_1 - smallestAngleCorner.x) * (xPetalCtr_1 - smallestAngleCorner.x);
@@ -473,8 +471,8 @@ namespace TriangleNet
                                 xPetalCtr, yPetalCtr, petalRadius, ref p);
                         /// choose the correct intersection point ///
                         // calculate middle point of the longest edge(bisector)
-                        xMidOfLongestEdge = (middleAngleCorner.x + smallestAngleCorner.x) / 2.0;
-                        yMidOfLongestEdge = (middleAngleCorner.y + smallestAngleCorner.y) / 2.0;
+                        xMidOfLongestEdge = (middleAngleCorner.x + smallestAngleCorner.x) / 2.0f;
+                        yMidOfLongestEdge = (middleAngleCorner.y + smallestAngleCorner.y) / 2.0f;
                         // we need to find correct intersection point, since line intersects circle twice
                         isCorrect = ChooseCorrectPoint(xMidOfLongestEdge, yMidOfLongestEdge, p[3], p[4],
                                     myCircumcenter.x, myCircumcenter.y, isObtuse);
@@ -499,7 +497,7 @@ namespace TriangleNet
                         { // there is at least one intersection point
                             // if it is between circumcenter and intersection	
                             // if it returns 1.0 this means we have a voronoi vertex within feasible region
-                            if (Math.Abs(voronoiOrInter[0] - 1.0) <= EPS)
+                            if (UnityEngine.Mathf.Abs(voronoiOrInter[0] - 1.0f) <= UnityEngine.Mathf.Epsilon)
                             {
                                 if (IsBadTriangleAngle(middleAngleCorner.x, middleAngleCorner.y, largestAngleCorner.x, largestAngleCorner.y, neighborCircumcenter.x, neighborCircumcenter.y))
                                 {
@@ -523,7 +521,7 @@ namespace TriangleNet
                                     // if it is inside feasible region, then insert v2				
                                     // apply perturbation
                                     // find the distance between circumcenter and intersection point
-                                    d = Math.Sqrt((inter_x - myCircumcenter.x) * (inter_x - myCircumcenter.x) +
+                                    d = UnityEngine.Mathf.Sqrt((inter_x - myCircumcenter.x) * (inter_x - myCircumcenter.x) +
                                         (inter_y - myCircumcenter.y) * (inter_y - myCircumcenter.y));
                                     // then find the vector going from intersection point to circumcenter
                                     ax = myCircumcenter.x - inter_x;
@@ -532,8 +530,8 @@ namespace TriangleNet
                                     ax = ax / d;
                                     ay = ay / d;
                                     // now calculate the new intersection point which is perturbated towards the circumcenter
-                                    inter_x = inter_x + ax * pertConst * Math.Sqrt(shortestEdgeDist);
-                                    inter_y = inter_y + ay * pertConst * Math.Sqrt(shortestEdgeDist);
+                                    inter_x = inter_x + ax * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
+                                    inter_y = inter_y + ay * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
                                     if (IsBadTriangleAngle(middleAngleCorner.x, middleAngleCorner.y, largestAngleCorner.x, largestAngleCorner.y, inter_x, inter_y))
                                     {
                                         // go back to circumcenter
@@ -605,8 +603,8 @@ namespace TriangleNet
 
                         /// choose the correct intersection point ///
                         // calcuwedgeslate middle point of the longest edge(bisector)
-                        xMidOfMiddleEdge = (largestAngleCorner.x + smallestAngleCorner.x) / 2.0;
-                        yMidOfMiddleEdge = (largestAngleCorner.y + smallestAngleCorner.y) / 2.0;
+                        xMidOfMiddleEdge = (largestAngleCorner.x + smallestAngleCorner.x) / 2.0f;
+                        yMidOfMiddleEdge = (largestAngleCorner.y + smallestAngleCorner.y) / 2.0f;
                         // we need to find correct intersection point, since line intersects circle twice
                         // this direction is always ACUTE
                         isCorrect = ChooseCorrectPoint(xMidOfMiddleEdge, yMidOfMiddleEdge, p[3], p[4],
@@ -629,11 +627,11 @@ namespace TriangleNet
                                 neighborCircumcenter.x, neighborCircumcenter.y, ref voronoiOrInter);
 
                         /// determine the point to be suggested ///
-                        if (p[0] > 0.0)
+                        if (p[0] > 0.0f)
                         { // there is at least one intersection point
                             // if it is between circumcenter and intersection	
                             // if it returns 1.0 this means we have a voronoi vertex within feasible region
-                            if (Math.Abs(voronoiOrInter[0] - 1.0) <= EPS)
+                            if (UnityEngine.Mathf.Abs(voronoiOrInter[0] - 1.0f) <= UnityEngine.Mathf.Epsilon)
                             {
                                 if (IsBadTriangleAngle(middleAngleCorner.x, middleAngleCorner.y, largestAngleCorner.x, largestAngleCorner.y, neighborCircumcenter.x, neighborCircumcenter.y))
                                 {
@@ -658,7 +656,7 @@ namespace TriangleNet
                                     // if it is inside feasible region, then insert v2				
                                     // apply perturbation
                                     // find the distance between circumcenter and intersection point
-                                    d = Math.Sqrt((inter_x - myCircumcenter.x) * (inter_x - myCircumcenter.x) +
+                                    d = UnityEngine.Mathf.Sqrt((inter_x - myCircumcenter.x) * (inter_x - myCircumcenter.x) +
                                         (inter_y - myCircumcenter.y) * (inter_y - myCircumcenter.y));
                                     // then find the vector going from intersection point to circumcenter
                                     ax = myCircumcenter.x - inter_x;
@@ -667,8 +665,8 @@ namespace TriangleNet
                                     ax = ax / d;
                                     ay = ay / d;
                                     // now calculate the new intersection point which is perturbated towards the circumcenter
-                                    inter_x = inter_x + ax * pertConst * Math.Sqrt(shortestEdgeDist);
-                                    inter_y = inter_y + ay * pertConst * Math.Sqrt(shortestEdgeDist);
+                                    inter_x = inter_x + ax * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
+                                    inter_y = inter_y + ay * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
                                     if (IsBadTriangleAngle(middleAngleCorner.x, middleAngleCorner.y, largestAngleCorner.x, largestAngleCorner.y, inter_x, inter_y))
                                     {
                                         // go back to circumcenter
@@ -749,8 +747,8 @@ namespace TriangleNet
                 circumcenter.y = origin_y + dy;
             }
 
-            xi = (yao * dx - xao * dy) * (2.0 * denominator);
-            eta = (xdo * dy - ydo * dx) * (2.0 * denominator);
+            xi = (yao * dx - xao * dy) * (2.0f * denominator);
+            eta = (xdo * dy - ydo * dx) * (2.0f * denominator);
 
             return circumcenter;
         }
@@ -767,23 +765,23 @@ namespace TriangleNet
         /// <param name="offcenter"></param>
         /// <param name="badotri"></param>
         private Point FindNewLocation(Vertex torg, Vertex tdest, Vertex tapex,
-            ref double xi, ref double eta, bool offcenter, Otri badotri)
+            ref float xi, ref float eta, bool offcenter, Otri badotri)
         {
-            double offconstant = behavior.offconstant;
+            float offconstant = behavior.offconstant;
 
             // for calculating the distances of the edges
-            double xdo, ydo, xao, yao, xda, yda;
-            double dodist, aodist, dadist;
+            float xdo, ydo, xao, yao, xda, yda;
+            float dodist, aodist, dadist;
             // for exact calculation
-            double denominator;
-            double dx, dy, dxoff, dyoff;
+            float denominator;
+            float dx, dy, dxoff, dyoff;
 
             ////////////////////////////// HALE'S VARIABLES //////////////////////////////
             // keeps the difference of coordinates edge 
-            double xShortestEdge = 0, yShortestEdge = 0, xMiddleEdge, yMiddleEdge, xLongestEdge, yLongestEdge;
+            float xShortestEdge = 0, yShortestEdge = 0, xMiddleEdge, yMiddleEdge, xLongestEdge, yLongestEdge;
 
             // keeps the square of edge lengths
-            double shortestEdgeDist = 0, middleEdgeDist = 0, longestEdgeDist = 0;
+            float shortestEdgeDist = 0, middleEdgeDist = 0, longestEdgeDist = 0;
 
             // keeps the vertices according to the angle incident to that vertex in a triangle
             Point smallestAngleCorner, middleAngleCorner, largestAngleCorner;
@@ -796,56 +794,56 @@ namespace TriangleNet
             // keeps if bad triangle is almost good or not
             int almostGood = 0;
             // keeps the cosine of the largest angle
-            double cosMaxAngle;
+            float cosMaxAngle;
             bool isObtuse; // 1: obtuse 0: nonobtuse
             // keeps the radius of petal
-            double petalRadius;
+            float petalRadius;
             // for calculating petal center
-            double xPetalCtr_1, yPetalCtr_1, xPetalCtr_2, yPetalCtr_2, xPetalCtr, yPetalCtr, xMidOfShortestEdge, yMidOfShortestEdge;
-            double dxcenter1, dycenter1, dxcenter2, dycenter2;
+            float xPetalCtr_1, yPetalCtr_1, xPetalCtr_2, yPetalCtr_2, xPetalCtr, yPetalCtr, xMidOfShortestEdge, yMidOfShortestEdge;
+            float dxcenter1, dycenter1, dxcenter2, dycenter2;
             // for finding neighbor
             Otri neighborotri = default(Otri);
-            double[] thirdPoint = new double[2];
+            float[] thirdPoint = new float[2];
             //int neighborNotFound = -1;
             // for keeping the vertices of the neighbor triangle
             Vertex neighborvertex_1;
             Vertex neighborvertex_2;
             Vertex neighborvertex_3;
             // dummy variables 
-            double xi_tmp = 0, eta_tmp = 0;
+            float xi_tmp = 0, eta_tmp = 0;
             //vertex thirdVertex;
             // for petal intersection
-            double vector_x, vector_y, xMidOfLongestEdge, yMidOfLongestEdge, inter_x, inter_y;
-            double[] p = new double[5], voronoiOrInter = new double[4];
+            float vector_x, vector_y, xMidOfLongestEdge, yMidOfLongestEdge, inter_x, inter_y;
+            float[] p = new float[5], voronoiOrInter = new float[4];
             bool isCorrect;
 
             // for vector calculations in perturbation
-            double ax, ay, d;
-            double pertConst = 0.06; // perturbation constant
+            float ax, ay, d;
+            float pertConst = 0.06f; // perturbation constant
 
-            double lengthConst = 1; // used at comparing circumcenter's distance to proposed point's distance
-            double justAcute = 1; // used for making the program working for one direction only
+            float lengthConst = 1; // used at comparing circumcenter's distance to proposed point's distance
+            float justAcute = 1; // used for making the program working for one direction only
             // for smoothing
             int relocated = 0;// used to differentiate between calling the deletevertex and just proposing a steiner point
-            double[] newloc = new double[2];   // new location suggested by smoothing
-            double origin_x = 0, origin_y = 0; // for keeping torg safe
+            float[] newloc = new float[2];   // new location suggested by smoothing
+            float origin_x = 0, origin_y = 0; // for keeping torg safe
             Otri delotri; // keeping the original orientation for relocation process
             // keeps the first and second direction suggested points
-            double dxFirstSuggestion, dyFirstSuggestion, dxSecondSuggestion, dySecondSuggestion;
+            float dxFirstSuggestion, dyFirstSuggestion, dxSecondSuggestion, dySecondSuggestion;
             // second direction variables
-            double xMidOfMiddleEdge, yMidOfMiddleEdge;
+            float xMidOfMiddleEdge, yMidOfMiddleEdge;
 
-            double minangle;	// in order to make sure that the circumcircle of the bad triangle is greater than petal
+            float minangle;	// in order to make sure that the circumcircle of the bad triangle is greater than petal
             // for calculating the slab
-            double linepnt1_x, linepnt1_y, linepnt2_x, linepnt2_y;	// two points of the line
-            double line_inter_x = 0, line_inter_y = 0;
-            double line_vector_x, line_vector_y;
-            double[] line_p = new double[3]; // used for getting the return values of functions related to line intersection
-            double[] line_result = new double[4];
+            float linepnt1_x, linepnt1_y, linepnt2_x, linepnt2_y;	// two points of the line
+            float line_inter_x = 0, line_inter_y = 0;
+            float line_vector_x, line_vector_y;
+            float[] line_p = new float[3]; // used for getting the return values of functions related to line intersection
+            float[] line_result = new float[4];
             // intersection of slab and the petal
-            double petal_slab_inter_x_first, petal_slab_inter_y_first, petal_slab_inter_x_second, petal_slab_inter_y_second, x_1, y_1, x_2, y_2;
-            double petal_bisector_x, petal_bisector_y, dist;
-            double alpha;
+            float petal_slab_inter_x_first, petal_slab_inter_y_first, petal_slab_inter_x_second, petal_slab_inter_y_second, x_1, y_1, x_2, y_2;
+            float petal_bisector_x, petal_bisector_y, dist;
+            float alpha;
             bool neighborNotFound_first;
             bool neighborNotFound_second;
             ////////////////////////////// END OF HALE'S VARIABLES //////////////////////////////
@@ -867,14 +865,14 @@ namespace TriangleNet
             // checking if the user wanted exact arithmetic or not
             if (Behavior.NoExact)
             {
-                denominator = 0.5 / (xdo * yao - xao * ydo);
+                denominator = 0.5f / (xdo * yao - xao * ydo);
             }
             else
             {
                 // Use the counterclockwise() routine to ensure a positive (and
                 //   reasonably accurate) result, avoiding any possibility of
                 //   division by zero.
-                denominator = 0.5 / Primitives.CounterClockwise(tdest, tapex, torg);
+                denominator = 0.5f / Primitives.CounterClockwise(tdest, tapex, torg);
                 // Don't count the above as an orientation test.
                 Statistic.CounterClockwiseCount--;
             }
@@ -1008,8 +1006,8 @@ namespace TriangleNet
                 if (orientation == 213 || orientation == 231)
                 {
                     // Find the position of the off-center, as described by Alper Ungor.
-                    dxoff = 0.5 * xShortestEdge - offconstant * yShortestEdge;
-                    dyoff = 0.5 * yShortestEdge + offconstant * xShortestEdge;
+                    dxoff = 0.5f * xShortestEdge - offconstant * yShortestEdge;
+                    dyoff = 0.5f * yShortestEdge + offconstant * xShortestEdge;
                     // If the off-center is closer to destination than the
                     //   circumcenter, use the off-center instead.
                     /// doubleLY BAD CASE ///			
@@ -1029,8 +1027,8 @@ namespace TriangleNet
                 else if (orientation == 123 || orientation == 132)
                 {
                     // Find the position of the off-center, as described by Alper Ungor.
-                    dxoff = 0.5 * xShortestEdge + offconstant * yShortestEdge;
-                    dyoff = 0.5 * yShortestEdge - offconstant * xShortestEdge;
+                    dxoff = 0.5f * xShortestEdge + offconstant * yShortestEdge;
+                    dyoff = 0.5f * yShortestEdge - offconstant * xShortestEdge;
                     // If the off-center is closer to the origin than the
                     //   circumcenter, use the off-center instead.
                     /// doubleLY BAD CASE ///
@@ -1049,8 +1047,8 @@ namespace TriangleNet
                 else
                 {//orientation == 312 || orientation == 321 
                     // Find the position of the off-center, as described by Alper Ungor.
-                    dxoff = 0.5 * xShortestEdge - offconstant * yShortestEdge;
-                    dyoff = 0.5 * yShortestEdge + offconstant * xShortestEdge;
+                    dxoff = 0.5f * xShortestEdge - offconstant * yShortestEdge;
+                    dyoff = 0.5f * yShortestEdge + offconstant * xShortestEdge;
                     // If the off-center is closer to the origin than the
                     //   circumcenter, use the off-center instead.
                     /// doubleLY BAD CASE ///
@@ -1071,13 +1069,13 @@ namespace TriangleNet
             {
 
                 /// calculate cosine of largest angle	///	
-                cosMaxAngle = (middleEdgeDist + shortestEdgeDist - longestEdgeDist) / (2 * Math.Sqrt(middleEdgeDist) * Math.Sqrt(shortestEdgeDist));
-                if (cosMaxAngle < 0.0)
+                cosMaxAngle = (middleEdgeDist + shortestEdgeDist - longestEdgeDist) / (2 * UnityEngine.Mathf.Sqrt(middleEdgeDist) * UnityEngine.Mathf.Sqrt(shortestEdgeDist));
+                if (cosMaxAngle < 0.0f)
                 {
                     // obtuse
                     isObtuse = true;
                 }
-                else if (Math.Abs(cosMaxAngle - 0.0) <= EPS)
+                else if (UnityEngine.Mathf.Abs(cosMaxAngle - 0.0f) <= UnityEngine.Mathf.Epsilon)
                 {
                     // right triangle (largest angle is 90 degrees)
                     isObtuse = true;
@@ -1123,31 +1121,31 @@ namespace TriangleNet
                     // first find the visible region, PETAL
                     // find the center of the circle and radius
                     // choose minimum angle as the maximum of quality angle and the minimum angle of the bad triangle
-                    minangle = Math.Acos((middleEdgeDist + longestEdgeDist - shortestEdgeDist) / (2 * Math.Sqrt(middleEdgeDist) * Math.Sqrt(longestEdgeDist))) * 180.0 / Math.PI;
+                    minangle = UnityEngine.Mathf.Acos((middleEdgeDist + longestEdgeDist - shortestEdgeDist) / (2 * UnityEngine.Mathf.Sqrt(middleEdgeDist) * UnityEngine.Mathf.Sqrt(longestEdgeDist))) * 180.0f / UnityEngine.Mathf.PI;
                     if (behavior.MinAngle > minangle)
                     {
                         minangle = behavior.MinAngle;
                     }
                     else
                     {
-                        minangle = minangle + 0.5;
+                        minangle = minangle + 0.5f;
                     }
-                    petalRadius = Math.Sqrt(shortestEdgeDist) / (2 * Math.Sin(minangle * Math.PI / 180.0));
+                    petalRadius = UnityEngine.Mathf.Sqrt(shortestEdgeDist) / (2 * UnityEngine.Mathf.Sin(minangle * UnityEngine.Mathf.PI / 180.0f));
                     /// compute two possible centers of the petal ///
                     // finding the center
                     // first find the middle point of smallest edge
-                    xMidOfShortestEdge = (middleAngleCorner.x + largestAngleCorner.x) / 2.0;
-                    yMidOfShortestEdge = (middleAngleCorner.y + largestAngleCorner.y) / 2.0;
+                    xMidOfShortestEdge = (middleAngleCorner.x + largestAngleCorner.x) / 2.0f;
+                    yMidOfShortestEdge = (middleAngleCorner.y + largestAngleCorner.y) / 2.0f;
                     // two possible centers
-                    xPetalCtr_1 = xMidOfShortestEdge + Math.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (middleAngleCorner.y -
-                        largestAngleCorner.y) / Math.Sqrt(shortestEdgeDist);
-                    yPetalCtr_1 = yMidOfShortestEdge + Math.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (largestAngleCorner.x -
-                        middleAngleCorner.x) / Math.Sqrt(shortestEdgeDist);
+                    xPetalCtr_1 = xMidOfShortestEdge + UnityEngine.Mathf.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (middleAngleCorner.y -
+                        largestAngleCorner.y) / UnityEngine.Mathf.Sqrt(shortestEdgeDist);
+                    yPetalCtr_1 = yMidOfShortestEdge + UnityEngine.Mathf.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (largestAngleCorner.x -
+                        middleAngleCorner.x) / UnityEngine.Mathf.Sqrt(shortestEdgeDist);
 
-                    xPetalCtr_2 = xMidOfShortestEdge - Math.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (middleAngleCorner.y -
-                        largestAngleCorner.y) / Math.Sqrt(shortestEdgeDist);
-                    yPetalCtr_2 = yMidOfShortestEdge - Math.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (largestAngleCorner.x -
-                        middleAngleCorner.x) / Math.Sqrt(shortestEdgeDist);
+                    xPetalCtr_2 = xMidOfShortestEdge - UnityEngine.Mathf.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (middleAngleCorner.y -
+                        largestAngleCorner.y) / UnityEngine.Mathf.Sqrt(shortestEdgeDist);
+                    yPetalCtr_2 = yMidOfShortestEdge - UnityEngine.Mathf.Sqrt(petalRadius * petalRadius - (shortestEdgeDist / 4)) * (largestAngleCorner.x -
+                        middleAngleCorner.x) / UnityEngine.Mathf.Sqrt(shortestEdgeDist);
                     // find the correct circle since there will be two possible circles
                     // calculate the distance to smallest angle corner
                     dxcenter1 = (xPetalCtr_1 - smallestAngleCorner.x) * (xPetalCtr_1 - smallestAngleCorner.x);
@@ -1174,20 +1172,20 @@ namespace TriangleNet
                     // calculate the intersection point of the petal and the slab lines
                     // first find the vector			
                     // distance between xmid and petal center			
-                    dist = Math.Sqrt((xPetalCtr - xMidOfShortestEdge) * (xPetalCtr - xMidOfShortestEdge) + (yPetalCtr - yMidOfShortestEdge) * (yPetalCtr - yMidOfShortestEdge));
+                    dist = UnityEngine.Mathf.Sqrt((xPetalCtr - xMidOfShortestEdge) * (xPetalCtr - xMidOfShortestEdge) + (yPetalCtr - yMidOfShortestEdge) * (yPetalCtr - yMidOfShortestEdge));
                     // find the unit vector goes from mid point to petal center			
                     line_vector_x = (xPetalCtr - xMidOfShortestEdge) / dist;
                     line_vector_y = (yPetalCtr - yMidOfShortestEdge) / dist;
                     // find the third point other than p and q
                     petal_bisector_x = xPetalCtr + line_vector_x * petalRadius;
                     petal_bisector_y = yPetalCtr + line_vector_y * petalRadius;
-                    alpha = (2.0 * behavior.MaxAngle + minangle - 180.0) * Math.PI / 180.0;
+                    alpha = (2.0f * behavior.MaxAngle + minangle - 180.0f) * UnityEngine.Mathf.PI / 180.0f;
                     // rotate the vector cw around the petal center			
-                    x_1 = petal_bisector_x * Math.Cos(alpha) + petal_bisector_y * Math.Sin(alpha) + xPetalCtr - xPetalCtr * Math.Cos(alpha) - yPetalCtr * Math.Sin(alpha);
-                    y_1 = -petal_bisector_x * Math.Sin(alpha) + petal_bisector_y * Math.Cos(alpha) + yPetalCtr + xPetalCtr * Math.Sin(alpha) - yPetalCtr * Math.Cos(alpha);
+                    x_1 = petal_bisector_x * UnityEngine.Mathf.Cos(alpha) + petal_bisector_y * UnityEngine.Mathf.Sin(alpha) + xPetalCtr - xPetalCtr * UnityEngine.Mathf.Cos(alpha) - yPetalCtr * UnityEngine.Mathf.Sin(alpha);
+                    y_1 = -petal_bisector_x * UnityEngine.Mathf.Sin(alpha) + petal_bisector_y * UnityEngine.Mathf.Cos(alpha) + yPetalCtr + xPetalCtr * UnityEngine.Mathf.Sin(alpha) - yPetalCtr * UnityEngine.Mathf.Cos(alpha);
                     // rotate the vector ccw around the petal center			
-                    x_2 = petal_bisector_x * Math.Cos(alpha) - petal_bisector_y * Math.Sin(alpha) + xPetalCtr - xPetalCtr * Math.Cos(alpha) + yPetalCtr * Math.Sin(alpha);
-                    y_2 = petal_bisector_x * Math.Sin(alpha) + petal_bisector_y * Math.Cos(alpha) + yPetalCtr - xPetalCtr * Math.Sin(alpha) - yPetalCtr * Math.Cos(alpha);
+                    x_2 = petal_bisector_x * UnityEngine.Mathf.Cos(alpha) - petal_bisector_y * UnityEngine.Mathf.Sin(alpha) + xPetalCtr - xPetalCtr * UnityEngine.Mathf.Cos(alpha) + yPetalCtr * UnityEngine.Mathf.Sin(alpha);
+                    y_2 = petal_bisector_x * UnityEngine.Mathf.Sin(alpha) + petal_bisector_y * UnityEngine.Mathf.Cos(alpha) + yPetalCtr - xPetalCtr * UnityEngine.Mathf.Sin(alpha) - yPetalCtr * UnityEngine.Mathf.Cos(alpha);
                     // we need to find correct intersection point, since there are two possibilities
                     // weather it is obtuse/acute the one closer to the minimum angle corner is the first direction
                     isCorrect = ChooseCorrectPoint(x_2, y_2, middleAngleCorner.x, middleAngleCorner.y, x_1, y_1, true);
@@ -1208,8 +1206,8 @@ namespace TriangleNet
                     }
                     /// choose the correct intersection point ///
                     // calculate middle point of the longest edge(bisector)
-                    xMidOfLongestEdge = (middleAngleCorner.x + smallestAngleCorner.x) / 2.0;
-                    yMidOfLongestEdge = (middleAngleCorner.y + smallestAngleCorner.y) / 2.0;
+                    xMidOfLongestEdge = (middleAngleCorner.x + smallestAngleCorner.x) / 2.0f;
+                    yMidOfLongestEdge = (middleAngleCorner.y + smallestAngleCorner.y) / 2.0f;
                     // if there is a neighbor triangle
                     if (!neighborNotFound_first)
                     {
@@ -1280,12 +1278,12 @@ namespace TriangleNet
                         { // there is at least one intersection point
                             // if it is between circumcenter and intersection	
                             // if it returns 1.0 this means we have a voronoi vertex within feasible region
-                            if (Math.Abs(voronoiOrInter[0] - 1.0) <= EPS)
+                            if (UnityEngine.Mathf.Abs(voronoiOrInter[0] - 1.0f) <= UnityEngine.Mathf.Epsilon)
                             {
                                 //-----------------hale new continues 1------------------//
                                 // now check if the line intersection is between cc and voronoi
                                 PointBetweenPoints(voronoiOrInter[2], voronoiOrInter[3], myCircumcenter.x, myCircumcenter.y, line_inter_x, line_inter_y, ref line_result);
-                                if (Math.Abs(line_result[0] - 1.0) <= EPS && line_p[0] > 0.0)
+                                if (UnityEngine.Mathf.Abs(line_result[0] - 1.0f) <= UnityEngine.Mathf.Epsilon && line_p[0] > 0.0f)
                                 {
                                     // check if we can go further by picking the slab line and petal intersection
                                     // calculate the distance to the smallest angle corner
@@ -1310,7 +1308,7 @@ namespace TriangleNet
                                         {
                                             // apply perturbation
                                             // find the distance between circumcenter and intersection point
-                                            d = Math.Sqrt((line_inter_x - myCircumcenter.x) * (line_inter_x - myCircumcenter.x) +
+                                            d = UnityEngine.Mathf.Sqrt((line_inter_x - myCircumcenter.x) * (line_inter_x - myCircumcenter.x) +
                                                 (line_inter_y - myCircumcenter.y) * (line_inter_y - myCircumcenter.y));
                                             // then find the vector going from intersection point to circumcenter
                                             ax = myCircumcenter.x - line_inter_x;
@@ -1319,8 +1317,8 @@ namespace TriangleNet
                                             ax = ax / d;
                                             ay = ay / d;
                                             // now calculate the new intersection point which is perturbated towards the circumcenter
-                                            line_inter_x = line_inter_x + ax * pertConst * Math.Sqrt(shortestEdgeDist);
-                                            line_inter_y = line_inter_y + ay * pertConst * Math.Sqrt(shortestEdgeDist);
+                                            line_inter_x = line_inter_x + ax * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
+                                            line_inter_y = line_inter_y + ay * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
                                             if (IsBadTriangleAngle(middleAngleCorner.x, middleAngleCorner.y, largestAngleCorner.x, largestAngleCorner.y, line_inter_x, line_inter_y))
                                             {
                                                 // go back to circumcenter
@@ -1366,7 +1364,7 @@ namespace TriangleNet
                                 //-----------------hale new continues 2-----------------//
                                 // now check if the line intersection is between cc and intersection point
                                 PointBetweenPoints(inter_x, inter_y, myCircumcenter.x, myCircumcenter.y, line_inter_x, line_inter_y, ref line_result);
-                                if (Math.Abs(line_result[0] - 1.0) <= EPS && line_p[0] > 0.0)
+                                if (UnityEngine.Mathf.Abs(line_result[0] - 1.0f) <= UnityEngine.Mathf.Epsilon && line_p[0] > 0.0f)
                                 {
                                     // check if we can go further by picking the slab line and petal intersection
                                     // calculate the distance to the smallest angle corner
@@ -1389,7 +1387,7 @@ namespace TriangleNet
                                         {
                                             // apply perturbation
                                             // find the distance between circumcenter and intersection point
-                                            d = Math.Sqrt((line_inter_x - myCircumcenter.x) * (line_inter_x - myCircumcenter.x) +
+                                            d = UnityEngine.Mathf.Sqrt((line_inter_x - myCircumcenter.x) * (line_inter_x - myCircumcenter.x) +
                                                 (line_inter_y - myCircumcenter.y) * (line_inter_y - myCircumcenter.y));
                                             // then find the vector going from intersection point to circumcenter
                                             ax = myCircumcenter.x - line_inter_x;
@@ -1398,8 +1396,8 @@ namespace TriangleNet
                                             ax = ax / d;
                                             ay = ay / d;
                                             // now calculate the new intersection point which is perturbated towards the circumcenter
-                                            line_inter_x = line_inter_x + ax * pertConst * Math.Sqrt(shortestEdgeDist);
-                                            line_inter_y = line_inter_y + ay * pertConst * Math.Sqrt(shortestEdgeDist);
+                                            line_inter_x = line_inter_x + ax * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
+                                            line_inter_y = line_inter_y + ay * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
                                             if (IsBadTriangleAngle(middleAngleCorner.x, middleAngleCorner.y, largestAngleCorner.x, largestAngleCorner.y, line_inter_x, line_inter_y))
                                             {
                                                 // go back to circumcenter
@@ -1430,7 +1428,7 @@ namespace TriangleNet
                                         // if it is inside feasible region, then insert v2				
                                         // apply perturbation
                                         // find the distance between circumcenter and intersection point
-                                        d = Math.Sqrt((inter_x - myCircumcenter.x) * (inter_x - myCircumcenter.x) +
+                                        d = UnityEngine.Mathf.Sqrt((inter_x - myCircumcenter.x) * (inter_x - myCircumcenter.x) +
                                             (inter_y - myCircumcenter.y) * (inter_y - myCircumcenter.y));
                                         // then find the vector going from intersection point to circumcenter
                                         ax = myCircumcenter.x - inter_x;
@@ -1439,8 +1437,8 @@ namespace TriangleNet
                                         ax = ax / d;
                                         ay = ay / d;
                                         // now calculate the new intersection point which is perturbated towards the circumcenter
-                                        inter_x = inter_x + ax * pertConst * Math.Sqrt(shortestEdgeDist);
-                                        inter_y = inter_y + ay * pertConst * Math.Sqrt(shortestEdgeDist);
+                                        inter_x = inter_x + ax * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
+                                        inter_y = inter_y + ay * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
                                         if (IsBadTriangleAngle(middleAngleCorner.x, middleAngleCorner.y, largestAngleCorner.x, largestAngleCorner.y, inter_x, inter_y))
                                         {
                                             // go back to circumcenter
@@ -1490,8 +1488,8 @@ namespace TriangleNet
 
                     /// choose the correct intersection point ///
                     // calculate middle point of the longest edge(bisector)
-                    xMidOfMiddleEdge = (largestAngleCorner.x + smallestAngleCorner.x) / 2.0;
-                    yMidOfMiddleEdge = (largestAngleCorner.y + smallestAngleCorner.y) / 2.0;
+                    xMidOfMiddleEdge = (largestAngleCorner.x + smallestAngleCorner.x) / 2.0f;
+                    yMidOfMiddleEdge = (largestAngleCorner.y + smallestAngleCorner.y) / 2.0f;
                     // if there is a neighbor triangle
                     if (!neighborNotFound_second)
                     {
@@ -1560,16 +1558,16 @@ namespace TriangleNet
                         PointBetweenPoints(inter_x, inter_y, myCircumcenter.x, myCircumcenter.y,
                                 neighborCircumcenter.x, neighborCircumcenter.y, ref voronoiOrInter);
                         /// determine the point to be suggested ///
-                        if (p[0] > 0.0)
+                        if (p[0] > 0.0f)
                         { // there is at least one intersection point				
                             // if it is between circumcenter and intersection	
                             // if it returns 1.0 this means we have a voronoi vertex within feasible region
-                            if (Math.Abs(voronoiOrInter[0] - 1.0) <= EPS)
+                            if (UnityEngine.Mathf.Abs(voronoiOrInter[0] - 1.0f) <= UnityEngine.Mathf.Epsilon)
                             {
                                 //-----------------hale new continues 1------------------//
                                 // now check if the line intersection is between cc and voronoi
                                 PointBetweenPoints(voronoiOrInter[2], voronoiOrInter[3], myCircumcenter.x, myCircumcenter.y, line_inter_x, line_inter_y, ref line_result);
-                                if (Math.Abs(line_result[0] - 1.0) <= EPS && line_p[0] > 0.0)
+                                if (UnityEngine.Mathf.Abs(line_result[0] - 1.0f) <= UnityEngine.Mathf.Epsilon && line_p[0] > 0.0f)
                                 {
                                     // check if we can go further by picking the slab line and petal intersection
                                     // calculate the distance to the smallest angle corner
@@ -1593,7 +1591,7 @@ namespace TriangleNet
                                         {
                                             // apply perturbation
                                             // find the distance between circumcenter and intersection point
-                                            d = Math.Sqrt((line_inter_x - myCircumcenter.x) * (line_inter_x - myCircumcenter.x) +
+                                            d = UnityEngine.Mathf.Sqrt((line_inter_x - myCircumcenter.x) * (line_inter_x - myCircumcenter.x) +
                                                 (line_inter_y - myCircumcenter.y) * (line_inter_y - myCircumcenter.y));
                                             // then find the vector going from intersection point to circumcenter
                                             ax = myCircumcenter.x - line_inter_x;
@@ -1602,8 +1600,8 @@ namespace TriangleNet
                                             ax = ax / d;
                                             ay = ay / d;
                                             // now calculate the new intersection point which is perturbated towards the circumcenter
-                                            line_inter_x = line_inter_x + ax * pertConst * Math.Sqrt(shortestEdgeDist);
-                                            line_inter_y = line_inter_y + ay * pertConst * Math.Sqrt(shortestEdgeDist);
+                                            line_inter_x = line_inter_x + ax * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
+                                            line_inter_y = line_inter_y + ay * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
                                             if (IsBadTriangleAngle(middleAngleCorner.x, middleAngleCorner.y, largestAngleCorner.x, largestAngleCorner.y, line_inter_x, line_inter_y))
                                             {
                                                 // go back to circumcenter
@@ -1648,7 +1646,7 @@ namespace TriangleNet
                                 //-----------------hale new continues 2-----------------//
                                 // now check if the line intersection is between cc and intersection point
                                 PointBetweenPoints(inter_x, inter_y, myCircumcenter.x, myCircumcenter.y, line_inter_x, line_inter_y, ref line_result);
-                                if (Math.Abs(line_result[0] - 1.0) <= EPS && line_p[0] > 0.0)
+                                if (UnityEngine.Mathf.Abs(line_result[0] - 1.0f) <= UnityEngine.Mathf.Epsilon && line_p[0] > 0.0f)
                                 {
                                     // check if we can go further by picking the slab line and petal intersection
                                     // calculate the distance to the smallest angle corner
@@ -1671,7 +1669,7 @@ namespace TriangleNet
                                         {
                                             // apply perturbation
                                             // find the distance between circumcenter and intersection point
-                                            d = Math.Sqrt((line_inter_x - myCircumcenter.x) * (line_inter_x - myCircumcenter.x) +
+                                            d = UnityEngine.Mathf.Sqrt((line_inter_x - myCircumcenter.x) * (line_inter_x - myCircumcenter.x) +
                                                 (line_inter_y - myCircumcenter.y) * (line_inter_y - myCircumcenter.y));
                                             // then find the vector going from intersection point to circumcenter
                                             ax = myCircumcenter.x - line_inter_x;
@@ -1680,8 +1678,8 @@ namespace TriangleNet
                                             ax = ax / d;
                                             ay = ay / d;
                                             // now calculate the new intersection point which is perturbated towards the circumcenter
-                                            line_inter_x = line_inter_x + ax * pertConst * Math.Sqrt(shortestEdgeDist);
-                                            line_inter_y = line_inter_y + ay * pertConst * Math.Sqrt(shortestEdgeDist);
+                                            line_inter_x = line_inter_x + ax * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
+                                            line_inter_y = line_inter_y + ay * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
                                             if (IsBadTriangleAngle(middleAngleCorner.x, middleAngleCorner.y, largestAngleCorner.x, largestAngleCorner.y, line_inter_x, line_inter_y))
                                             {
                                                 // go back to circumcenter
@@ -1712,7 +1710,7 @@ namespace TriangleNet
                                         // if it is inside feasible region, then insert v2				
                                         // apply perturbation
                                         // find the distance between circumcenter and intersection point
-                                        d = Math.Sqrt((inter_x - myCircumcenter.x) * (inter_x - myCircumcenter.x) +
+                                        d = UnityEngine.Mathf.Sqrt((inter_x - myCircumcenter.x) * (inter_x - myCircumcenter.x) +
                                             (inter_y - myCircumcenter.y) * (inter_y - myCircumcenter.y));
                                         // then find the vector going from intersection point to circumcenter
                                         ax = myCircumcenter.x - inter_x;
@@ -1721,8 +1719,8 @@ namespace TriangleNet
                                         ax = ax / d;
                                         ay = ay / d;
                                         // now calculate the new intersection point which is perturbated towards the circumcenter
-                                        inter_x = inter_x + ax * pertConst * Math.Sqrt(shortestEdgeDist);
-                                        inter_y = inter_y + ay * pertConst * Math.Sqrt(shortestEdgeDist);
+                                        inter_x = inter_x + ax * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
+                                        inter_y = inter_y + ay * pertConst * UnityEngine.Mathf.Sqrt(shortestEdgeDist);
                                         if (IsBadTriangleAngle(middleAngleCorner.x, middleAngleCorner.y, largestAngleCorner.x, largestAngleCorner.y, inter_x, inter_y))
                                         {
                                             // go back to circumcenter
@@ -1951,8 +1949,8 @@ namespace TriangleNet
                 circumcenter.x = origin_x + dx;
                 circumcenter.y = origin_y + dy;
             }
-            xi = (yao * dx - xao * dy) * (2.0 * denominator);
-            eta = (xdo * dy - ydo * dx) * (2.0 * denominator);
+            xi = (yao * dx - xao * dy) * (2.0f * denominator);
+            eta = (xdo * dy - ydo * dx) * (2.0f * denominator);
 
             return circumcenter;
         }
@@ -1965,7 +1963,7 @@ namespace TriangleNet
         /// <param name="dadist"></param>
         /// <param name="dodist"></param>
         /// <returns>Returns a number indicating an orientation.</returns>
-        private int LongestShortestEdge(double aodist, double dadist, double dodist)
+        private int LongestShortestEdge(float aodist, float dadist, float dodist)
         {
             // 123: shortest: aodist	// 213: shortest: dadist	// 312: shortest: dodist	
             //	middle: dadist 		//	middle: aodist 		//	middle: aodist 
@@ -2032,25 +2030,25 @@ namespace TriangleNet
         /// <param name="newloc">The new location for the point, if somothing is possible.</param>
         /// <returns>Returns 1, 2 or 3 if smoothing will work, 0 otherwise.</returns>
         private int DoSmoothing(Otri badotri, Vertex torg, Vertex tdest, Vertex tapex,
-            ref double[] newloc)
+            ref float[] newloc)
         {
 
             int numpoints_p = 0;// keeps the number of points in a star of point p, q, r
             int numpoints_q = 0;
             int numpoints_r = 0;
             //int i;	
-            double[] possibilities = new double[6];//there can be more than one possibilities
+            float[] possibilities = new float[6];//there can be more than one possibilities
             int num_pos = 0; // number of possibilities
             int flag1 = 0, flag2 = 0, flag3 = 0;
             bool newLocFound = false;
 
-            double[] points_p = new double[500];// keeps the points in a star of point p, q, r
-            double[] points_q = new double[500];
-            double[] points_r = new double[500];
+            float[] points_p = new float[500];// keeps the points in a star of point p, q, r
+            float[] points_q = new float[500];
+            float[] points_r = new float[500];
 
             //vertex v1, v2, v3;	// for ccw test
-            //double p1[2], p2[2], p3[2];
-            //double temp[2];
+            //float p1[2], p2[2], p3[2];
+            //float temp[2];
 
             //********************* TRY TO RELOCATE POINT "p" ***************
 
@@ -2124,7 +2122,7 @@ namespace TriangleNet
             {
                 //newLocFound = getPetalIntersection(m, b,numpoints_q, points_q, newloc);
                 //newLocFound = getPetalIntersectionBruteForce(m, b,numpoints_q, points_q, newloc,tapex[0],tapex[1]);
-                if (behavior.MaxAngle == 0.0)
+                if (behavior.MaxAngle == 0.0f)
                 {
                     newLocFound = GetWedgeIntersectionWithoutMaxAngle(numpoints_q, points_q, ref newloc);
                 }
@@ -2170,7 +2168,7 @@ namespace TriangleNet
             {
                 //newLocFound = getPetalIntersection(m, b,numpoints_r, points_r, newloc);
                 //newLocFound = getPetalIntersectionBruteForce(m, b,numpoints_r, points_r, newloc,tdest[0],tdest[1]);
-                if (behavior.MaxAngle == 0.0)
+                if (behavior.MaxAngle == 0.0f)
                 {
                     newLocFound = GetWedgeIntersectionWithoutMaxAngle(numpoints_r, points_r, ref newloc);
                 }
@@ -2238,15 +2236,15 @@ namespace TriangleNet
         /// <param name="points">List of points on the star of the given point.</param>
         /// <returns>Number of points on the star of the given point.</returns>
         private int GetStarPoints(Otri badotri, Vertex p, Vertex q, Vertex r,
-                    int whichPoint, ref double[] points)
+                    int whichPoint, ref float[] points)
         {
 
             Otri neighotri = default(Otri);  // for return value of the function
             Otri tempotri;   // for temporary usage
-            double first_x = 0, first_y = 0;	  // keeps the first point to be considered
-            double second_x = 0, second_y = 0;  // for determining the edge we will begin
-            double third_x = 0, third_y = 0;	  // termination
-            double[] returnPoint = new double[2];	  // for keeping the returned point	
+            float first_x = 0, first_y = 0;	  // keeps the first point to be considered
+            float second_x = 0, second_y = 0;  // for determining the edge we will begin
+            float third_x = 0, third_y = 0;	  // termination
+            float[] returnPoint = new float[2];	  // for keeping the returned point	
             int numvertices = 0;	  // for keeping number of surrounding vertices
 
             // first determine which point to be used to find its neighbor triangles
@@ -2308,8 +2306,8 @@ namespace TriangleNet
                     break;
                 }
 
-            } while (!((Math.Abs(returnPoint[0] - third_x) <= EPS) &&
-                     (Math.Abs(returnPoint[1] - third_y) <= EPS)));
+            } while (!((UnityEngine.Mathf.Abs(returnPoint[0] - third_x) <= UnityEngine.Mathf.Epsilon) &&
+                     (UnityEngine.Mathf.Abs(returnPoint[1] - third_y) <= UnityEngine.Mathf.Epsilon)));
             return numvertices / 2;
 
         }
@@ -2326,9 +2324,9 @@ namespace TriangleNet
         /// <param name="neighotri">Pointer for the neighbor triangle.</param>
         /// <returns>Returns true if vertex was found.</returns>
         private bool GetNeighborsVertex(Otri badotri,
-                        double first_x, double first_y,
-                        double second_x, double second_y,
-                        ref double[] thirdpoint, ref Otri neighotri)
+                        float first_x, float first_y,
+                        float second_x, float second_y,
+                        ref float[] thirdpoint, ref Otri neighotri)
         {
 
             Otri neighbor = default(Otri); // keeps the neighbor triangles
@@ -2370,20 +2368,20 @@ namespace TriangleNet
                     {
                         // begin searching for the correct neighbor triangle
                         firstVertexMatched = 0;
-                        if ((Math.Abs(first_x - neighborvertex_1.x) < EPS) &&
-                             (Math.Abs(first_y - neighborvertex_1.y) < EPS))
+                        if ((UnityEngine.Mathf.Abs(first_x - neighborvertex_1.x) < UnityEngine.Mathf.Epsilon) &&
+                             (UnityEngine.Mathf.Abs(first_y - neighborvertex_1.y) < UnityEngine.Mathf.Epsilon))
                         {
                             firstVertexMatched = 11; // neighbor's 1st vertex is matched to first vertex
 
                         }
-                        else if ((Math.Abs(first_x - neighborvertex_2.x) < EPS) &&
-                               (Math.Abs(first_y - neighborvertex_2.y) < EPS))
+                        else if ((UnityEngine.Mathf.Abs(first_x - neighborvertex_2.x) < UnityEngine.Mathf.Epsilon) &&
+                               (UnityEngine.Mathf.Abs(first_y - neighborvertex_2.y) < UnityEngine.Mathf.Epsilon))
                         {
                             firstVertexMatched = 12; // neighbor's 2nd vertex is matched to first vertex
 
                         }
-                        else if ((Math.Abs(first_x - neighborvertex_3.x) < EPS) &&
-                                   (Math.Abs(first_y - neighborvertex_3.y) < EPS))
+                        else if ((UnityEngine.Mathf.Abs(first_x - neighborvertex_3.x) < UnityEngine.Mathf.Epsilon) &&
+                                   (UnityEngine.Mathf.Abs(first_y - neighborvertex_3.y) < UnityEngine.Mathf.Epsilon))
                         {
                             firstVertexMatched = 13; // neighbor's 3rd vertex is matched to first vertex
 
@@ -2392,18 +2390,18 @@ namespace TriangleNet
                 } // end of first vertex matching */
 
                         secondVertexMatched = 0;
-                        if ((Math.Abs(second_x - neighborvertex_1.x) < EPS) &&
-                            (Math.Abs(second_y - neighborvertex_1.y) < EPS))
+                        if ((UnityEngine.Mathf.Abs(second_x - neighborvertex_1.x) < UnityEngine.Mathf.Epsilon) &&
+                            (UnityEngine.Mathf.Abs(second_y - neighborvertex_1.y) < UnityEngine.Mathf.Epsilon))
                         {
                             secondVertexMatched = 21; // neighbor's 1st vertex is matched to second vertex
                         }
-                        else if ((Math.Abs(second_x - neighborvertex_2.x) < EPS) &&
-                           (Math.Abs(second_y - neighborvertex_2.y) < EPS))
+                        else if ((UnityEngine.Mathf.Abs(second_x - neighborvertex_2.x) < UnityEngine.Mathf.Epsilon) &&
+                           (UnityEngine.Mathf.Abs(second_y - neighborvertex_2.y) < UnityEngine.Mathf.Epsilon))
                         {
                             secondVertexMatched = 22; // neighbor's 2nd vertex is matched to second vertex
                         }
-                        else if ((Math.Abs(second_x - neighborvertex_3.x) < EPS) &&
-                               (Math.Abs(second_y - neighborvertex_3.y) < EPS))
+                        else if ((UnityEngine.Mathf.Abs(second_x - neighborvertex_3.x) < UnityEngine.Mathf.Epsilon) &&
+                               (UnityEngine.Mathf.Abs(second_y - neighborvertex_3.y) < UnityEngine.Mathf.Epsilon))
                         {
                             secondVertexMatched = 23; // neighbor's 3rd vertex is matched to second vertex
                         }/*else{	
@@ -2482,36 +2480,36 @@ namespace TriangleNet
         /// <param name="newloc">A new location for the point according to surrounding points.</param>
         /// <returns>Returns true if new location found</returns>
         private bool GetWedgeIntersectionWithoutMaxAngle(int numpoints,
-            double[] points, ref double[] newloc)
+            float[] points, ref float[] newloc)
         {
-            //double total_x = 0;
-            //double total_y = 0;
-            double x0, y0, x1, y1, x2, y2;
-            //double compConst = 0.01; // for comparing real numbers
+            //float total_x = 0;
+            //float total_y = 0;
+            float x0, y0, x1, y1, x2, y2;
+            //float compConst = 0.01; // for comparing real numbers
 
-            double x01, y01;
-            //double x12, y12;
+            float x01, y01;
+            //float x12, y12;
 
-            //double ax, ay, bx, by; //two intersections of two petals disks
+            //float ax, ay, bx, by; //two intersections of two petals disks
 
-            double d01;//, d12
+            float d01;//, d12
 
-            //double petalx0, petaly0, petalr0, petalx1, petaly1, petalr1; 
+            //float petalx0, petaly0, petalr0, petalx1, petaly1, petalr1; 
 
-            //double p[5];
+            //float p[5];
 
-            double[] petalx = new double[2 * numpoints];
-            double[] petaly = new double[2 * numpoints];
-            double[] petalr = new double[2 * numpoints];
+            float[] petalx = new float[2 * numpoints];
+            float[] petaly = new float[2 * numpoints];
+            float[] petalr = new float[2 * numpoints];
 
-            double[] wedges = new double[2000];
-            double xmid, ymid, dist, x3, y3;
-            double x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4, tempx, tempy;
-            double ux, uy;
-            double alpha;
-            double[] p1 = new double[3];
-            double[] initialConvexPoly = new double[500];
-            //double poly_points;
+            float[] wedges = new float[2000];
+            float xmid, ymid, dist, x3, y3;
+            float x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4, tempx, tempy;
+            float ux, uy;
+            float alpha;
+            float[] p1 = new float[3];
+            float[] initialConvexPoly = new float[500];
+            //float poly_points;
             int numpolypoints = 0;
 
             //int numBadTriangle;
@@ -2520,7 +2518,7 @@ namespace TriangleNet
 
             int s, flag, count, num;
 
-            double petalcenterconstant, petalradiusconstant;
+            float petalcenterconstant, petalradiusconstant;
 
             x0 = points[2 * numpoints - 4];
             y0 = points[2 * numpoints - 3];
@@ -2528,7 +2526,7 @@ namespace TriangleNet
             y1 = points[2 * numpoints - 1];
 
             // minimum angle
-            alpha = behavior.MinAngle * Math.PI / 180.0;
+            alpha = behavior.MinAngle * UnityEngine.Mathf.PI / 180.0f;
             // initialize the constants
             if (behavior.goodAngle == 1.0)
             {
@@ -2537,8 +2535,8 @@ namespace TriangleNet
             }
             else
             {
-                petalcenterconstant = 0.5 / Math.Tan(alpha);
-                petalradiusconstant = 0.5 / Math.Sin(alpha);
+                petalcenterconstant = 0.5f / UnityEngine.Mathf.Tan(alpha);
+                petalradiusconstant = 0.5f / UnityEngine.Mathf.Sin(alpha);
             }
 
             for (i = 0; i < numpoints * 2; i = i + 2)
@@ -2550,15 +2548,15 @@ namespace TriangleNet
 
                 x01 = x1 - x0;
                 y01 = y1 - y0;
-                d01 = Math.Sqrt(x01 * x01 + y01 * y01);
+                d01 = UnityEngine.Mathf.Sqrt(x01 * x01 + y01 * y01);
                 // find the petal of each edge 01;
 
                 //	    printf("PETAL CONSTANT (%.12f, %.12f)\n", 
                 //	   b.petalcenterconstant,  b.petalradiusconstant );
                 //	    printf("PETAL DIFFS (%.6f, %.6f, %.4f)\n", x01, y01, d01);
 
-                petalx[i / 2] = x0 + 0.5 * x01 - petalcenterconstant * y01;
-                petaly[i / 2] = y0 + 0.5 * y01 + petalcenterconstant * x01;
+                petalx[i / 2] = x0 + 0.5f * x01 - petalcenterconstant * y01;
+                petaly[i / 2] = y0 + 0.5f * y01 + petalcenterconstant * x01;
                 petalr[i / 2] = petalradiusconstant * d01;
                 petalx[numpoints + i / 2] = petalx[i / 2];
                 petaly[numpoints + i / 2] = petaly[i / 2];
@@ -2566,11 +2564,11 @@ namespace TriangleNet
                 //printf("PETAL POINTS #%d (%.12f, %.12f) R= %.12f\n", i/2, petalx[i/2],petaly[i/2], petalr[i/2]);
 
                 /// FIRST FIND THE HALF-PLANE POINTS FOR EACH PETAL
-                xmid = (x0 + x1) / 2.0;	// mid point of pq
-                ymid = (y0 + y1) / 2.0;
+                xmid = (x0 + x1) / 2.0f;	// mid point of pq
+                ymid = (y0 + y1) / 2.0f;
 
                 // distance between xmid and petal center	
-                dist = Math.Sqrt((petalx[i / 2] - xmid) * (petalx[i / 2] - xmid) + (petaly[i / 2] - ymid) * (petaly[i / 2] - ymid));
+                dist = UnityEngine.Mathf.Sqrt((petalx[i / 2] - xmid) * (petalx[i / 2] - xmid) + (petaly[i / 2] - ymid) * (petaly[i / 2] - ymid));
                 // find the unit vector goes from mid point to petal center
                 ux = (petalx[i / 2] - xmid) / dist;
                 uy = (petaly[i / 2] - ymid) / dist;
@@ -2587,8 +2585,8 @@ namespace TriangleNet
                 ux = x1 - x0;
                 uy = y1 - y0;
                 // rotate the vector around p = (x0,y0) in ccw by alpha degrees
-                x_1 = x1 * Math.Cos(alpha) - y1 * Math.Sin(alpha) + x0 - x0 * Math.Cos(alpha) + y0 * Math.Sin(alpha);
-                y_1 = x1 * Math.Sin(alpha) + y1 * Math.Cos(alpha) + y0 - x0 * Math.Sin(alpha) - y0 * Math.Cos(alpha);
+                x_1 = x1 * UnityEngine.Mathf.Cos(alpha) - y1 * UnityEngine.Mathf.Sin(alpha) + x0 - x0 * UnityEngine.Mathf.Cos(alpha) + y0 * UnityEngine.Mathf.Sin(alpha);
+                y_1 = x1 * UnityEngine.Mathf.Sin(alpha) + y1 * UnityEngine.Mathf.Cos(alpha) + y0 - x0 * UnityEngine.Mathf.Sin(alpha) - y0 * UnityEngine.Mathf.Cos(alpha);
                 // add these to wedges list as lines in order	
                 wedges[i * 16] = x0; wedges[i * 16 + 1] = y0;
                 wedges[i * 16 + 2] = x_1; wedges[i * 16 + 3] = y_1;
@@ -2598,8 +2596,8 @@ namespace TriangleNet
                 ux = x0 - x1;
                 uy = y0 - y1;
                 // rotate the vector around q = (x1,y1) in cw by alpha degrees
-                x_2 = x0 * Math.Cos(alpha) + y0 * Math.Sin(alpha) + x1 - x1 * Math.Cos(alpha) - y1 * Math.Sin(alpha);
-                y_2 = -x0 * Math.Sin(alpha) + y0 * Math.Cos(alpha) + y1 + x1 * Math.Sin(alpha) - y1 * Math.Cos(alpha);
+                x_2 = x0 * UnityEngine.Mathf.Cos(alpha) + y0 * UnityEngine.Mathf.Sin(alpha) + x1 - x1 * UnityEngine.Mathf.Cos(alpha) - y1 * UnityEngine.Mathf.Sin(alpha);
+                y_2 = -x0 * UnityEngine.Mathf.Sin(alpha) + y0 * UnityEngine.Mathf.Cos(alpha) + y1 + x1 * UnityEngine.Mathf.Sin(alpha) - y1 * UnityEngine.Mathf.Cos(alpha);
                 // add these to wedges list as lines in order	
                 wedges[i * 16 + 4] = x_2; wedges[i * 16 + 5] = y_2;
                 wedges[i * 16 + 6] = x1; wedges[i * 16 + 7] = y1;
@@ -2612,8 +2610,8 @@ namespace TriangleNet
                 for (j = 1; j < 4; j++)
                 {
                     // rotate the vector around (petalx,petaly) in cw by (60 - alpha)*j degrees			
-                    x_3 = x3 * Math.Cos((Math.PI / 3.0 - alpha) * j) + y3 * Math.Sin((Math.PI / 3.0 - alpha) * j) + petalx[i / 2] - petalx[i / 2] * Math.Cos((Math.PI / 3.0 - alpha) * j) - petaly[i / 2] * Math.Sin((Math.PI / 3.0 - alpha) * j);
-                    y_3 = -x3 * Math.Sin((Math.PI / 3.0 - alpha) * j) + y3 * Math.Cos((Math.PI / 3.0 - alpha) * j) + petaly[i / 2] + petalx[i / 2] * Math.Sin((Math.PI / 3.0 - alpha) * j) - petaly[i / 2] * Math.Cos((Math.PI / 3.0 - alpha) * j);
+                    x_3 = x3 * UnityEngine.Mathf.Cos((UnityEngine.Mathf.PI / 3.0f - alpha) * j) + y3 * UnityEngine.Mathf.Sin((UnityEngine.Mathf.PI / 3.0f - alpha) * j) + petalx[i / 2] - petalx[i / 2] * UnityEngine.Mathf.Cos((UnityEngine.Mathf.PI / 3.0f - alpha) * j) - petaly[i / 2] * UnityEngine.Mathf.Sin((UnityEngine.Mathf.PI / 3.0f - alpha) * j);
+                    y_3 = -x3 * UnityEngine.Mathf.Sin((UnityEngine.Mathf.PI / 3.0f - alpha) * j) + y3 * UnityEngine.Mathf.Cos((UnityEngine.Mathf.PI / 3.0f - alpha) * j) + petaly[i / 2] + petalx[i / 2] * UnityEngine.Mathf.Sin((UnityEngine.Mathf.PI / 3.0f - alpha) * j) - petaly[i / 2] * UnityEngine.Mathf.Cos((UnityEngine.Mathf.PI / 3.0f - alpha) * j);
                     // add these to wedges list as lines in order	
                     wedges[i * 16 + 8 + 4 * (j - 1)] = x_3; wedges[i * 16 + 9 + 4 * (j - 1)] = y_3;
                     wedges[i * 16 + 10 + 4 * (j - 1)] = tempx; wedges[i * 16 + 11 + 4 * (j - 1)] = tempy;
@@ -2624,8 +2622,8 @@ namespace TriangleNet
                 for (j = 1; j < 4; j++)
                 {
                     // rotate the vector around (petalx,petaly) in ccw by (60 - alpha)*j degrees
-                    x_4 = x3 * Math.Cos((Math.PI / 3.0 - alpha) * j) - y3 * Math.Sin((Math.PI / 3.0 - alpha) * j) + petalx[i / 2] - petalx[i / 2] * Math.Cos((Math.PI / 3.0 - alpha) * j) + petaly[i / 2] * Math.Sin((Math.PI / 3.0 - alpha) * j);
-                    y_4 = x3 * Math.Sin((Math.PI / 3.0 - alpha) * j) + y3 * Math.Cos((Math.PI / 3.0 - alpha) * j) + petaly[i / 2] - petalx[i / 2] * Math.Sin((Math.PI / 3.0 - alpha) * j) - petaly[i / 2] * Math.Cos((Math.PI / 3.0 - alpha) * j);
+                    x_4 = x3 * UnityEngine.Mathf.Cos((UnityEngine.Mathf.PI / 3.0f - alpha) * j) - y3 * UnityEngine.Mathf.Sin((UnityEngine.Mathf.PI / 3.0f - alpha) * j) + petalx[i / 2] - petalx[i / 2] * UnityEngine.Mathf.Cos((UnityEngine.Mathf.PI / 3.0f - alpha) * j) + petaly[i / 2] * UnityEngine.Mathf.Sin((UnityEngine.Mathf.PI / 3.0f - alpha) * j);
+                    y_4 = x3 * UnityEngine.Mathf.Sin((UnityEngine.Mathf.PI / 3.0f - alpha) * j) + y3 * UnityEngine.Mathf.Cos((UnityEngine.Mathf.PI / 3.0f - alpha) * j) + petaly[i / 2] - petalx[i / 2] * UnityEngine.Mathf.Sin((UnityEngine.Mathf.PI / 3.0f - alpha) * j) - petaly[i / 2] * UnityEngine.Mathf.Cos((UnityEngine.Mathf.PI / 3.0f - alpha) * j);
 
                     // add these to wedges list as lines in order	
                     wedges[i * 16 + 20 + 4 * (j - 1)] = tempx; wedges[i * 16 + 21 + 4 * (j - 1)] = tempy;
@@ -2740,38 +2738,38 @@ namespace TriangleNet
         /// <param name="points"></param>
         /// <param name="newloc">A new location for the point according to surrounding points.</param>
         /// <returns>Returns true if new location found</returns>
-        private bool GetWedgeIntersection(int numpoints, double[] points, ref double[] newloc)
+        private bool GetWedgeIntersection(int numpoints, float[] points, ref float[] newloc)
         {
-            //double total_x = 0;
-            //double total_y = 0;
-            double x0, y0, x1, y1, x2, y2;
-            //double compConst = 0.01; // for comparing real numbers
+            //float total_x = 0;
+            //float total_y = 0;
+            float x0, y0, x1, y1, x2, y2;
+            //float compConst = 0.01; // for comparing real numbers
 
-            double x01, y01;
-            //double x12, y12;
+            float x01, y01;
+            //float x12, y12;
 
-            //double ax, ay, bx, by;  //two intersections of two petals disks
+            //float ax, ay, bx, by;  //two intersections of two petals disks
 
-            double d01;//, d12
+            float d01;//, d12
 
-            //double petalx0, petaly1, petaly0, petalr0, petalx1, petalr1; 
+            //float petalx0, petaly1, petaly0, petalr0, petalx1, petalr1; 
 
-            //double p[5];
+            //float p[5];
 
-            double[] petalx = new double[2 * numpoints];
-            double[] petaly = new double[2 * numpoints];
-            double[] petalr = new double[2 * numpoints];
+            float[] petalx = new float[2 * numpoints];
+            float[] petaly = new float[2 * numpoints];
+            float[] petalr = new float[2 * numpoints];
 
-            double[] wedges = new double[2000];
-            double xmid, ymid, dist, x3, y3;
-            double x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4, tempx, tempy, x_5, y_5, x_6, y_6;
-            double ux, uy;
-            double[] p1 = new double[3], p2 = new double[3], p3 = new double[3], p4 = new double[3];
-            double[] initialConvexPoly = new double[500];
-            //double poly_points;
+            float[] wedges = new float[2000];
+            float xmid, ymid, dist, x3, y3;
+            float x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4, tempx, tempy, x_5, y_5, x_6, y_6;
+            float ux, uy;
+            float[] p1 = new float[3], p2 = new float[3], p3 = new float[3], p4 = new float[3];
+            float[] initialConvexPoly = new float[500];
+            //float poly_points;
             int numpolypoints = 0;
             int howManyPoints = 0;	// keeps the number of points used for representing the wedge
-            double line345 = 4.0, line789 = 4.0; // flag keeping which line to skip or construct
+            float line345 = 4.0f, line789 = 4.0f; // flag keeping which line to skip or construct
 
             int numBadTriangle;
 
@@ -2781,9 +2779,9 @@ namespace TriangleNet
 
             int n, e;
 
-            double weight;
+            float weight;
 
-            double petalcenterconstant, petalradiusconstant;
+            float petalcenterconstant, petalradiusconstant;
 
             x0 = points[2 * numpoints - 4];
             y0 = points[2 * numpoints - 3];
@@ -2791,13 +2789,13 @@ namespace TriangleNet
             y1 = points[2 * numpoints - 1];
 
             // minimum / maximum angle
-            double alpha, sinAlpha, cosAlpha, beta, sinBeta, cosBeta;
-            alpha = behavior.MinAngle * Math.PI / 180.0;
-            sinAlpha = Math.Sin(alpha);
-            cosAlpha = Math.Cos(alpha);
-            beta = behavior.MaxAngle * Math.PI / 180.0;
-            sinBeta = Math.Sin(beta);
-            cosBeta = Math.Cos(beta);
+            float alpha, sinAlpha, cosAlpha, beta, sinBeta, cosBeta;
+            alpha = behavior.MinAngle * UnityEngine.Mathf.PI / 180.0f;
+            sinAlpha = UnityEngine.Mathf.Sin(alpha);
+            cosAlpha = UnityEngine.Mathf.Cos(alpha);
+            beta = behavior.MaxAngle * UnityEngine.Mathf.PI / 180.0f;
+            sinBeta = UnityEngine.Mathf.Sin(beta);
+            cosBeta = UnityEngine.Mathf.Cos(beta);
 
             // initialize the constants
             if (behavior.goodAngle == 1.0)
@@ -2807,8 +2805,8 @@ namespace TriangleNet
             }
             else
             {
-                petalcenterconstant = 0.5 / Math.Tan(alpha);
-                petalradiusconstant = 0.5 / Math.Sin(alpha);
+                petalcenterconstant = 0.5f / UnityEngine.Mathf.Tan(alpha);
+                petalradiusconstant = 0.5f / UnityEngine.Mathf.Sin(alpha);
             }
 
             for (i = 0; i < numpoints * 2; i = i + 2)
@@ -2821,15 +2819,15 @@ namespace TriangleNet
 
                 x01 = x1 - x0;
                 y01 = y1 - y0;
-                d01 = Math.Sqrt(x01 * x01 + y01 * y01);
+                d01 = UnityEngine.Mathf.Sqrt(x01 * x01 + y01 * y01);
                 // find the petal of each edge 01;
 
                 //	    printf("PETAL CONSTANT (%.12f, %.12f)\n", 
                 //	   b.petalcenterconstant,  b.petalradiusconstant );
                 //	    printf("PETAL DIFFS (%.6f, %.6f, %.4f)\n", x01, y01, d01);
                 //printf("i:%d numpoints:%d\n", i, numpoints);
-                petalx[i / 2] = x0 + 0.5 * x01 - petalcenterconstant * y01;
-                petaly[i / 2] = y0 + 0.5 * y01 + petalcenterconstant * x01;
+                petalx[i / 2] = x0 + 0.5f * x01 - petalcenterconstant * y01;
+                petaly[i / 2] = y0 + 0.5f * y01 + petalcenterconstant * x01;
                 petalr[i / 2] = petalradiusconstant * d01;
                 petalx[numpoints + i / 2] = petalx[i / 2];
                 petaly[numpoints + i / 2] = petaly[i / 2];
@@ -2837,11 +2835,11 @@ namespace TriangleNet
                 //printf("PETAL POINTS #%d (%.12f, %.12f) R= %.12f\n", i/2, petalx[i/2],petaly[i/2], petalr[i/2]);
 
                 /// FIRST FIND THE HALF-PLANE POINTS FOR EACH PETAL
-                xmid = (x0 + x1) / 2.0;	// mid point of pq
-                ymid = (y0 + y1) / 2.0;
+                xmid = (x0 + x1) / 2.0f;	// mid point of pq
+                ymid = (y0 + y1) / 2.0f;
 
                 // distance between xmid and petal center	
-                dist = Math.Sqrt((petalx[i / 2] - xmid) * (petalx[i / 2] - xmid) + (petaly[i / 2] - ymid) * (petaly[i / 2] - ymid));
+                dist = UnityEngine.Mathf.Sqrt((petalx[i / 2] - xmid) * (petalx[i / 2] - xmid) + (petaly[i / 2] - ymid) * (petaly[i / 2] - ymid));
                 // find the unit vector goes from mid point to petal center
                 ux = (petalx[i / 2] - xmid) / dist;
                 uy = (petaly[i / 2] - ymid) / dist;
@@ -2882,29 +2880,29 @@ namespace TriangleNet
 
                 /// DETERMINE HOW MANY POINTS TO USE ACCORDING TO THE MINANGLE-MAXANGLE COMBINATION
                 // petal center angle
-                alpha = (2.0 * behavior.MaxAngle + behavior.MinAngle - 180.0);
-                if (alpha <= 0.0)
+                alpha = (2.0f * behavior.MaxAngle + behavior.MinAngle - 180.0f);
+                if (alpha <= 0.0f)
                 {// when only angle lines needed
                     // 4 point case
                     howManyPoints = 4;
                     //printf("4 point case\n");
-                    line345 = 1.0;
-                    line789 = 1.0;
+                    line345 = 1.0f;
+                    line789 = 1.0f;
                 }
-                else if (alpha <= 5.0)
+                else if (alpha <= 5.0f)
                 {// when only angle lines plus two other lines are needed
                     // 6 point case
                     howManyPoints = 6;
                     //printf("6 point case\n");
-                    line345 = 2.0;
-                    line789 = 2.0;
+                    line345 = 2.0f;
+                    line789 = 2.0f;
                 }
-                else if (alpha <= 10.0)
+                else if (alpha <= 10.0f)
                 {// when we need more lines
                     // 8 point case
                     howManyPoints = 8;
-                    line345 = 3.0;
-                    line789 = 3.0;
+                    line345 = 3.0f;
+                    line789 = 3.0f;
                     //printf("8 point case\n");
                 }
                 else
@@ -2912,18 +2910,18 @@ namespace TriangleNet
                     // 10 point case
                     howManyPoints = 10;
                     //printf("10 point case\n");
-                    line345 = 4.0;
-                    line789 = 4.0;
+                    line345 = 4.0f;
+                    line789 = 4.0f;
                 }
-                alpha = alpha * Math.PI / 180.0;
+                alpha = alpha * UnityEngine.Mathf.PI / 180.0f;
                 /// LINE #3, #4, #5: (x3,y3) & (x_3,y_3) 
                 for (j = 1; j < line345; j++)
                 {
                     if (line345 == 1)
                         continue;
                     // rotate the vector around (petalx,petaly) in cw by (alpha/3.0)*j degrees			
-                    x_3 = x3 * Math.Cos((alpha / (line345 - 1.0)) * j) + y3 * Math.Sin(((alpha / (line345 - 1.0)) * j)) + petalx[i / 2] - petalx[i / 2] * Math.Cos(((alpha / (line345 - 1.0)) * j)) - petaly[i / 2] * Math.Sin(((alpha / (line345 - 1.0)) * j));
-                    y_3 = -x3 * Math.Sin(((alpha / (line345 - 1.0)) * j)) + y3 * Math.Cos(((alpha / (line345 - 1.0)) * j)) + petaly[i / 2] + petalx[i / 2] * Math.Sin(((alpha / (line345 - 1.0)) * j)) - petaly[i / 2] * Math.Cos(((alpha / (line345 - 1.0)) * j));
+                    x_3 = x3 * UnityEngine.Mathf.Cos((alpha / (line345 - 1.0f)) * j) + y3 * UnityEngine.Mathf.Sin(((alpha / (line345 - 1.0f)) * j)) + petalx[i / 2] - petalx[i / 2] * UnityEngine.Mathf.Cos(((alpha / (line345 - 1.0f)) * j)) - petaly[i / 2] * UnityEngine.Mathf.Sin(((alpha / (line345 - 1.0f)) * j));
+                    y_3 = -x3 * UnityEngine.Mathf.Sin(((alpha / (line345 - 1.0f)) * j)) + y3 * UnityEngine.Mathf.Cos(((alpha / (line345 - 1.0f)) * j)) + petaly[i / 2] + petalx[i / 2] * UnityEngine.Mathf.Sin(((alpha / (line345 - 1.0f)) * j)) - petaly[i / 2] * UnityEngine.Mathf.Cos(((alpha / (line345 - 1.0f)) * j));
                     // add these to wedges list as lines in order	
                     wedges[i * 20 + 8 + 4 * (j - 1)] = x_3; wedges[i * 20 + 9 + 4 * (j - 1)] = y_3;
                     wedges[i * 20 + 10 + 4 * (j - 1)] = tempx; wedges[i * 20 + 11 + 4 * (j - 1)] = tempy;
@@ -2946,8 +2944,8 @@ namespace TriangleNet
                     if (line789 == 1)
                         continue;
                     // rotate the vector around (petalx,petaly) in ccw by (alpha/3.0)*j degrees
-                    x_4 = x3 * Math.Cos((alpha / (line789 - 1.0)) * j) - y3 * Math.Sin((alpha / (line789 - 1.0)) * j) + petalx[i / 2] - petalx[i / 2] * Math.Cos((alpha / (line789 - 1.0)) * j) + petaly[i / 2] * Math.Sin((alpha / (line789 - 1.0)) * j);
-                    y_4 = x3 * Math.Sin((alpha / (line789 - 1.0)) * j) + y3 * Math.Cos((alpha / (line789 - 1.0)) * j) + petaly[i / 2] - petalx[i / 2] * Math.Sin((alpha / (line789 - 1.0)) * j) - petaly[i / 2] * Math.Cos((alpha / (line789 - 1.0)) * j);
+                    x_4 = x3 * UnityEngine.Mathf.Cos((alpha / (line789 - 1.0f)) * j) - y3 * UnityEngine.Mathf.Sin((alpha / (line789 - 1.0f)) * j) + petalx[i / 2] - petalx[i / 2] * UnityEngine.Mathf.Cos((alpha / (line789 - 1.0f)) * j) + petaly[i / 2] * UnityEngine.Mathf.Sin((alpha / (line789 - 1.0f)) * j);
+                    y_4 = x3 * UnityEngine.Mathf.Sin((alpha / (line789 - 1.0f)) * j) + y3 * UnityEngine.Mathf.Cos((alpha / (line789 - 1.0f)) * j) + petaly[i / 2] - petalx[i / 2] * UnityEngine.Mathf.Sin((alpha / (line789 - 1.0f)) * j) - petaly[i / 2] * UnityEngine.Mathf.Cos((alpha / (line789 - 1.0f)) * j);
 
                     // add these to wedges list as lines in order	
                     wedges[i * 20 + 24 + 4 * (j - 1)] = tempx; wedges[i * 20 + 25 + 4 * (j - 1)] = tempy;
@@ -2976,7 +2974,7 @@ namespace TriangleNet
                             LineLineIntersection(x0, y0, x_1, y_1, x1, y1, x_5, y_5, ref p2);
                             LineLineIntersection(x0, y0, x_6, y_6, x1, y1, x_5, y_5, ref p3);
                             LineLineIntersection(x0, y0, x_6, y_6, x1, y1, x_2, y_2, ref p4);
-                            if ((p1[0] == 1.0) && (p2[0] == 1.0) && (p3[0] == 1.0) && (p4[0] == 1.0))
+                            if ((p1[0] == 1.0f) && (p2[0] == 1.0f) && (p3[0] == 1.0f) && (p4[0] == 1.0f))
                             {
                                 // #0
                                 initialConvexPoly[0] = p1[1]; initialConvexPoly[1] = p1[2];
@@ -2993,7 +2991,7 @@ namespace TriangleNet
                             LineLineIntersection(x0, y0, x_1, y_1, x1, y1, x_2, y_2, ref p1);
                             LineLineIntersection(x0, y0, x_1, y_1, x1, y1, x_5, y_5, ref p2);
                             LineLineIntersection(x0, y0, x_6, y_6, x1, y1, x_2, y_2, ref p3);
-                            if ((p1[0] == 1.0) && (p2[0] == 1.0) && (p3[0] == 1.0))
+                            if ((p1[0] == 1.0f) && (p2[0] == 1.0f) && (p3[0] == 1.0f))
                             {
                                 // #0
                                 initialConvexPoly[0] = p1[1]; initialConvexPoly[1] = p1[2];
@@ -3014,7 +3012,7 @@ namespace TriangleNet
                             LineLineIntersection(x0, y0, x_1, y_1, x1, y1, x_2, y_2, ref p1);
                             LineLineIntersection(x0, y0, x_1, y_1, x1, y1, x_5, y_5, ref p2);
                             LineLineIntersection(x0, y0, x_6, y_6, x1, y1, x_2, y_2, ref p3);
-                            if ((p1[0] == 1.0) && (p2[0] == 1.0) && (p3[0] == 1.0))
+                            if ((p1[0] == 1.0f) && (p2[0] == 1.0f) && (p3[0] == 1.0f))
                             {
                                 // #0
                                 initialConvexPoly[0] = p1[1]; initialConvexPoly[1] = p1[2];
@@ -3040,7 +3038,7 @@ namespace TriangleNet
                             LineLineIntersection(x0, y0, x_1, y_1, x1, y1, x_5, y_5, ref p2);
                             LineLineIntersection(x0, y0, x_6, y_6, x1, y1, x_2, y_2, ref p3);
                             //printf("p3 %f %f %f (%f %f) (%f %f) (%f %f) (%f %f)\n",p3[0],p3[1],p3[2], x0, y0, x_6, x_6, x1, y1, x_2, y_2);
-                            if ((p1[0] == 1.0) && (p2[0] == 1.0) && (p3[0] == 1.0))
+                            if ((p1[0] == 1.0f) && (p2[0] == 1.0f) && (p3[0] == 1.0f))
                             {
                                 // #0
                                 initialConvexPoly[0] = p1[1]; initialConvexPoly[1] = p1[2];
@@ -3140,7 +3138,7 @@ namespace TriangleNet
                 /// IF THERE IS A FEASIBLE INTERSECTION POLYGON, FIND ITS CENTROID AS THE NEW LOCATION
                 FindPolyCentroid(numpolypoints, initialConvexPoly, ref newloc);
 
-                if (behavior.MaxAngle != 0.0)
+                if (behavior.MaxAngle != 0.0f)
                 {
                     numBadTriangle = 0;
                     for (j = 0; j < numpoints * 2 - 2; j = j + 2)
@@ -3166,18 +3164,18 @@ namespace TriangleNet
                     {
                         for (e = 1; e < n; e = e + 1)
                         {
-                            newloc[0] = 0.0; newloc[1] = 0.0;
+                            newloc[0] = 0.0f; newloc[1] = 0.0f;
                             for (i = 0; i < 2 * numpoints; i = i + 2)
                             {
-                                weight = 1.0 / numpoints;
+                                weight = 1.0f / numpoints;
                                 if (i == k)
                                 {
-                                    newloc[0] = newloc[0] + 0.1 * e * weight * points[i];
-                                    newloc[1] = newloc[1] + 0.1 * e * weight * points[i + 1];
+                                    newloc[0] = newloc[0] + 0.1f * e * weight * points[i];
+                                    newloc[1] = newloc[1] + 0.1f * e * weight * points[i + 1];
                                 }
                                 else
                                 {
-                                    weight = (1.0 - 0.1 * e * weight) / (double)(numpoints - 1.0);
+                                    weight = (1.0f - 0.1f * e * weight) / (float)(numpoints - 1.0f);
                                     newloc[0] = newloc[0] + weight * points[i];
                                     newloc[1] = newloc[1] + weight * points[i + 1];
                                 }
@@ -3225,7 +3223,7 @@ namespace TriangleNet
         /// <param name="numpoints"></param>
         /// <param name="points"></param>
         /// <returns>Returns true if the polygon has angles greater than 2*minangle.</returns>
-        private bool ValidPolygonAngles(int numpoints, double[] points)
+        private bool ValidPolygonAngles(int numpoints, float[] points)
         {
             int i;//,j
             for (i = 0; i < numpoints; i++)
@@ -3267,14 +3265,14 @@ namespace TriangleNet
         /// <param name="y3"></param>
         /// <returns>Returns true, if it is a BAD polygon corner, returns false if it is a GOOD 
         /// polygon corner</returns>
-        private bool IsBadPolygonAngle(double x1, double y1,
-                        double x2, double y2, double x3, double y3)
+        private bool IsBadPolygonAngle(float x1, float y1,
+                        float x2, float y2, float x3, float y3)
         {
             // variables keeping the distance values for the edges
-            double dx12, dy12, dx23, dy23, dx31, dy31;
-            double dist12, dist23, dist31;
+            float dx12, dy12, dx23, dy23, dx31, dy31;
+            float dist12, dist23, dist31;
 
-            double cosAngle;    // in order to check minimum angle condition
+            float cosAngle;    // in order to check minimum angle condition
 
             // calculate the side lengths
 
@@ -3290,10 +3288,10 @@ namespace TriangleNet
             dist31 = dx31 * dx31 + dy31 * dy31;
 
             /// calculate cosine of largest angle	///	
-            cosAngle = (dist12 + dist23 - dist31) / (2 * Math.Sqrt(dist12) * Math.Sqrt(dist23));
+            cosAngle = (dist12 + dist23 - dist31) / (2 * UnityEngine.Mathf.Sqrt(dist12) * UnityEngine.Mathf.Sqrt(dist23));
             // Check whether the angle is smaller than permitted which is 2*minangle!!!  
-            //printf("angle: %f 2*minangle = %f\n",acos(cosAngle)*180/PI, 2*acos(Math.Sqrt(b.goodangle))*180/PI);
-            if (Math.Acos(cosAngle) < 2 * Math.Acos(Math.Sqrt(behavior.goodAngle)))
+            //printf("angle: %f 2*minangle = %f\n",acos(cosAngle)*180/PI, 2*acos(UnityEngine.Mathf.Sqrt(b.goodangle))*180/PI);
+            if (UnityEngine.Mathf.Acos(cosAngle) < 2 * UnityEngine.Mathf.Acos(UnityEngine.Mathf.Sqrt(behavior.goodAngle)))
             {
                 return true;// it is a BAD triangle
             }
@@ -3317,10 +3315,10 @@ namespace TriangleNet
         // referenced to: http://local.wasp.uwa.edu.au/~pbourke/geometry/
         /// </remarks>
         private void LineLineIntersection(
-            double x1, double y1,
-            double x2, double y2,
-            double x3, double y3,
-            double x4, double y4, ref double[] p)
+            float x1, float y1,
+            float x2, float y2,
+            float x3, float y3,
+            float x4, float y4, ref float[] p)
         {
             // x1,y1  P1 coordinates (point of line 1)
             // x2,y2  P2 coordinates (point of line 1)	
@@ -3331,25 +3329,25 @@ namespace TriangleNet
             // This function returns a pointer array which first index indicates
             // weather they intersect on one point or not, followed by coordinate pairs.
 
-            double u_a, u_b, denom;
+            float u_a, u_b, denom;
 
             // calculate denominator first
             denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
             u_a = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3);
             u_b = (x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3);
             // if denominator and numerator equal to zero, lines are coincident
-            if (Math.Abs(denom - 0.0) < EPS && (Math.Abs(u_b - 0.0) < EPS && Math.Abs(u_a - 0.0) < EPS))
+            if (UnityEngine.Mathf.Abs(denom - 0.0f) < UnityEngine.Mathf.Epsilon && (UnityEngine.Mathf.Abs(u_b - 0.0f) < UnityEngine.Mathf.Epsilon && UnityEngine.Mathf.Abs(u_a - 0.0f) < UnityEngine.Mathf.Epsilon))
             {
-                p[0] = 0.0;
+                p[0] = 0.0f;
             }
             // if denominator equals to zero, lines are parallel
-            else if (Math.Abs(denom - 0.0) < EPS)
+            else if (UnityEngine.Mathf.Abs(denom - 0.0f) < UnityEngine.Mathf.Epsilon)
             {
-                p[0] = 0.0;
+                p[0] = 0.0f;
             }
             else
             {
-                p[0] = 1.0;
+                p[0] = 1.0f;
                 u_a = u_a / denom;
                 u_b = u_b / denom;
                 p[1] = x1 + u_a * (x2 - x1); // not the intersection point
@@ -3372,19 +3370,19 @@ namespace TriangleNet
         /// <remarks>
         /// http://www.mathematik.uni-ulm.de/stochastik/lehre/ws03_04/rt/Geometry2D.ps
         /// </remarks>
-        private int HalfPlaneIntersection(int numvertices, ref double[] convexPoly, double x1, double y1, double x2, double y2)
+        private int HalfPlaneIntersection(int numvertices, ref float[] convexPoly, float x1, float y1, float x2, float y2)
         {
-            double dx, dy;	// direction of the line
-            double z, min, max;
+            float dx, dy;	// direction of the line
+            float z, min, max;
             int i, j;
 
-            double[][] polys = new double[3][];
-            polys[0] = new double[2];
-            polys[1] = new double[2];
-            polys[2] = new double[2];
+            float[][] polys = new float[3][];
+            polys[0] = new float[2];
+            polys[1] = new float[2];
+            polys[2] = new float[2];
 
             int numpolys;
-            double[] res = null;
+            float[] res = null;
             int count = 0;
             int intFound = 0;
             dx = x2 - x1;
@@ -3410,7 +3408,7 @@ namespace TriangleNet
                         max = (z > max ? z : max);
                     }
                     // ... and choose the (absolute) greater of both
-                    z = (Math.Abs(min) > Math.Abs(max) ? min : max);
+                    z = (UnityEngine.Mathf.Abs(min) > UnityEngine.Mathf.Abs(max) ? min : max);
                     // and if it is positive, the polygon polys[i]
                     // is on the left side of line
                     if (z > 0.0)
@@ -3450,23 +3448,23 @@ namespace TriangleNet
         /// <remarks>
         /// http://www.mathematik.uni-ulm.de/stochastik/lehre/ws03_04/rt/Geometry2D.ps
         /// </remarks>
-        private int SplitConvexPolygon(int numvertices, double[] convexPoly, double x1, double y1, double x2, double y2, ref double[][] polys)
+        private int SplitConvexPolygon(int numvertices, float[] convexPoly, float x1, float y1, float x2, float y2, ref float[][] polys)
         {
             // state = 0: before the first intersection (with the line)
             // state = 1: after the first intersection (with the line)
             // state = 2: after the second intersection (with the line)
 
             int state = 0;
-            double[] p = new double[3];
+            float[] p = new float[3];
             // poly1 is constructed in states 0 and 2
-            double[] poly1 = new double[100];
+            float[] poly1 = new float[100];
             int poly1counter = 0;
             // poly2 is constructed in state 1
-            double[] poly2 = new double[100];
+            float[] poly2 = new float[100];
             int poly2counter = 0;
             int numpolys;
             int i;
-            double compConst = 0.000000000001;
+            float compConst = 0.000000000001f;
             // for debugging 
             int case1 = 0, case2 = 0, case3 = 0, case31 = 0, case32 = 0, case33 = 0, case311 = 0, case3111 = 0;
             // intersect all edges of poly with line
@@ -3475,7 +3473,7 @@ namespace TriangleNet
                 int j = (i + 2 >= 2 * numvertices) ? 0 : i + 2;
                 LineLineSegmentIntersection(x1, y1, x2, y2, convexPoly[i], convexPoly[i + 1], convexPoly[j], convexPoly[j + 1], ref p);
                 // if this edge does not intersect with line
-                if (Math.Abs(p[0] - 0.0) <= compConst)
+                if (UnityEngine.Mathf.Abs(p[0] - 0.0f) <= compConst)
                 {
                     //System.out.println("null");
                     // add p[j] to the proper polygon
@@ -3495,7 +3493,7 @@ namespace TriangleNet
                     case1++;
                 }
                 // ... or if the intersection is the whole edge
-                else if (Math.Abs(p[0] - 2.0) <= compConst)
+                else if (UnityEngine.Mathf.Abs(p[0] - 2.0f) <= compConst)
                 {
                     //System.out.println(o);
                     // then we can not reach state 1 and 2
@@ -3511,7 +3509,7 @@ namespace TriangleNet
                     // debug
                     case3++;
                     // if the point is the second vertex of the edge
-                    if (Math.Abs(p[1] - convexPoly[j]) <= compConst && Math.Abs(p[2] - convexPoly[j + 1]) <= compConst)
+                    if (UnityEngine.Mathf.Abs(p[1] - convexPoly[j]) <= compConst && UnityEngine.Mathf.Abs(p[2] - convexPoly[j + 1]) <= compConst)
                     {
                         // debug
                         case31++;
@@ -3554,7 +3552,7 @@ namespace TriangleNet
                         }
                     }
                     // ... if the point is not the other vertex of the edge
-                    else if (!(Math.Abs(p[1] - convexPoly[i]) <= compConst && Math.Abs(p[2] - convexPoly[i + 1]) <= compConst))
+                    else if (!(UnityEngine.Mathf.Abs(p[1] - convexPoly[i]) <= compConst && UnityEngine.Mathf.Abs(p[2] - convexPoly[i + 1]) <= compConst))
                     {
                         // debug
                         case32++;
@@ -3640,22 +3638,22 @@ namespace TriangleNet
         /// <remarks>
         /// http://www.mathematik.uni-ulm.de/stochastik/lehre/ws03_04/rt/Geometry2D.ps
         /// </remarks>
-        private int LinePointLocation(double x1, double y1, double x2, double y2, double x, double y)
+        private int LinePointLocation(float x1, float y1, float x2, float y2, float x, float y)
         {
-            double z;
-            if (Math.Atan((y2 - y1) / (x2 - x1)) * 180.0 / Math.PI == 90.0)
+            float z;
+            if (UnityEngine.Mathf.Atan((y2 - y1) / (x2 - x1)) * 180.0f / UnityEngine.Mathf.PI == 90.0f)
             {
-                if (Math.Abs(x1 - x) <= 0.00000000001)
+                if (UnityEngine.Mathf.Abs(x1 - x) <= 0.00000000001f)
                     return 0;
             }
             else
             {
-                if (Math.Abs(y1 + (((y2 - y1) * (x - x1)) / (x2 - x1)) - y) <= EPS)
+                if (UnityEngine.Mathf.Abs(y1 + (((y2 - y1) * (x - x1)) / (x2 - x1)) - y) <= UnityEngine.Mathf.Epsilon)
                     return 0;
             }
             // third component of the 3 dimensional product
             z = (x2 - x1) * (y - y1) - (y2 - y1) * (x - x1);
-            if (Math.Abs(z - 0.0) <= 0.00000000001)
+            if (UnityEngine.Mathf.Abs(z - 0.0f) <= 0.00000000001f)
             {
                 return 0;
             }
@@ -3685,10 +3683,10 @@ namespace TriangleNet
         /// referenced to: http://local.wasp.uwa.edu.au/~pbourke/geometry/
         /// </remarks>
         private void LineLineSegmentIntersection(
-            double x1, double y1,
-            double x2, double y2,
-            double x3, double y3,
-            double x4, double y4, ref double[] p)
+            float x1, float y1,
+            float x2, float y2,
+            float x3, float y3,
+            float x4, float y4, ref float[] p)
         {
             // x1,y1  P1 coordinates (point of line)
             // x2,y2  P2 coordinates (point of line)	
@@ -3699,8 +3697,8 @@ namespace TriangleNet
             // This function returns a pointer array which first index indicates
             // weather they intersect on one point or not, followed by coordinate pairs.
 
-            double u_a, u_b, denom;
-            double compConst = 0.0000000000001;
+            float u_a, u_b, denom;
+            float compConst = 0.0000000000001f;
             // calculate denominator first
             denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
             u_a = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3);
@@ -3709,15 +3707,15 @@ namespace TriangleNet
 
             //if(fabs(denom-0.0) < compConst && (fabs(u_b-0.0) < compConst && fabs(u_a-0.0) < compConst)){
             //printf("denom %.20f u_b  %.20f u_a  %.20f\n",denom, u_b, u_a);
-            if (Math.Abs(denom - 0.0) < compConst)
+            if (UnityEngine.Mathf.Abs(denom - 0.0f) < compConst)
             {
-                if (Math.Abs(u_b - 0.0) < compConst && Math.Abs(u_a - 0.0) < compConst)
+                if (UnityEngine.Mathf.Abs(u_b - 0.0f) < compConst && UnityEngine.Mathf.Abs(u_a - 0.0f) < compConst)
                 {
-                    p[0] = 2.0;	// if denominator and numerator equal to zero, lines are coincident
+                    p[0] = 2.0f;	// if denominator and numerator equal to zero, lines are coincident
                 }
                 else
                 {
-                    p[0] = 0.0;// if denominator equals to zero, lines are parallel
+                    p[0] = 0.0f;// if denominator equals to zero, lines are parallel
                 }
 
             }
@@ -3729,11 +3727,11 @@ namespace TriangleNet
                 if (u_b < -compConst || u_b > 1.0 + compConst)
                 {	// check if it is on the line segment		
                     // 		printf("line (%.20f, %.20f) (%.20f, %.20f) line seg (%.20f, %.20f) (%.20f, %.20f) \n",x1, y1 ,x2, y2 ,x3, y3 , x4, y4);		
-                    p[0] = 0.0;
+                    p[0] = 0.0f;
                 }
                 else
                 {
-                    p[0] = 1.0;
+                    p[0] = 1.0f;
                     p[1] = x1 + u_a * (x2 - x1); // intersection point
                     p[2] = y1 + u_a * (y2 - y1);
                 }
@@ -3747,11 +3745,11 @@ namespace TriangleNet
         /// <param name="numpoints"></param>
         /// <param name="points"></param>
         /// <param name="centroid">Centroid of a given polygon </param>
-        private void FindPolyCentroid(int numpoints, double[] points, ref double[] centroid)
+        private void FindPolyCentroid(int numpoints, float[] points, ref float[] centroid)
         {
             int i;
-            //double area = 0.0;//, temp
-            centroid[0] = 0.0; centroid[1] = 0.0;
+            //float area = 0.0;//, temp
+            centroid[0] = 0.0f; centroid[1] = 0.0f;
 
             for (i = 0; i < 2 * numpoints; i = i + 2)
             {
@@ -3780,9 +3778,9 @@ namespace TriangleNet
         /// referenced to: http://local.wasp.uwa.edu.au/~pbourke/geometry/sphereline/
         /// </remarks>
         private void CircleLineIntersection(
-            double x1, double y1,
-            double x2, double y2,
-            double x3, double y3, double r, ref double[] p)
+            float x1, float y1,
+            float x2, float y2,
+            float x3, float y3, float r, ref float[] p)
         {
             // x1,y1  P1 coordinates [point of line]
             // x2,y2  P2 coordinates [point of line]
@@ -3792,39 +3790,39 @@ namespace TriangleNet
             // This function returns a pointer array which first index indicates
             // the number of intersection points, followed by coordinate pairs.
 
-            //double x , y ;
-            double a, b, c, mu, i;
+            //float x , y ;
+            float a, b, c, mu, i;
 
             a = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
             b = 2 * ((x2 - x1) * (x1 - x3) + (y2 - y1) * (y1 - y3));
             c = x3 * x3 + y3 * y3 + x1 * x1 + y1 * y1 - 2 * (x3 * x1 + y3 * y1) - r * r;
             i = b * b - 4 * a * c;
 
-            if (i < 0.0)
+            if (i < 0.0f)
             {
                 // no intersection
-                p[0] = 0.0;
+                p[0] = 0.0f;
             }
-            else if (Math.Abs(i - 0.0) < EPS)
+            else if (UnityEngine.Mathf.Abs(i - 0.0f) < UnityEngine.Mathf.Epsilon)
             {
                 // one intersection
-                p[0] = 1.0;
+                p[0] = 1.0f;
 
                 mu = -b / (2 * a);
                 p[1] = x1 + mu * (x2 - x1);
                 p[2] = y1 + mu * (y2 - y1);
 
             }
-            else if (i > 0.0 && !(Math.Abs(a - 0.0) < EPS))
+            else if (i > 0.0f && !(UnityEngine.Mathf.Abs(a - 0.0f) < UnityEngine.Mathf.Epsilon))
             {
                 // two intersections
-                p[0] = 2.0;
+                p[0] = 2.0f;
                 // first intersection
-                mu = (-b + Math.Sqrt(i)) / (2 * a);
+                mu = (-b + UnityEngine.Mathf.Sqrt(i)) / (2 * a);
                 p[1] = x1 + mu * (x2 - x1);
                 p[2] = y1 + mu * (y2 - y1);
                 // second intersection
-                mu = (-b - Math.Sqrt(i)) / (2 * a);
+                mu = (-b - UnityEngine.Mathf.Sqrt(i)) / (2 * a);
                 p[3] = x1 + mu * (x2 - x1);
                 p[4] = y1 + mu * (y2 - y1);
 
@@ -3832,7 +3830,7 @@ namespace TriangleNet
             }
             else
             {
-                p[0] = 0.0;
+                p[0] = 0.0f;
             }
         }
 
@@ -3848,11 +3846,11 @@ namespace TriangleNet
         /// <param name="isObtuse"></param>
         /// <returns>Returns true, if given point is the correct one otherwise return false.</returns>
         private bool ChooseCorrectPoint(
-            double x1, double y1,
-            double x2, double y2,
-            double x3, double y3, bool isObtuse)
+            float x1, float y1,
+            float x2, float y2,
+            float x3, float y3, bool isObtuse)
         {
-            double d1, d2;
+            float d1, d2;
             bool p;
 
             // squared distance between circumcenter and intersection point
@@ -3900,13 +3898,13 @@ namespace TriangleNet
         /// <param name="x">P3 coordinates [point to be compared]	(neighbor's circumcenter)</param>
         /// <param name="y">P3 coordinates [point to be compared]	(neighbor's circumcenter)</param>
         /// <param name="p"></param>
-        private void PointBetweenPoints(double x1, double y1, double x2, double y2, double x, double y, ref double[] p)
+        private void PointBetweenPoints(float x1, float y1, float x2, float y2, float x, float y, ref float[] p)
         {
             // now check whether the point is close to circumcenter than intersection point
             // BETWEEN THE POINTS
             if ((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y) < (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
             {
-                p[0] = 1.0;
+                p[0] = 1.0f;
                 // calculate the squared distance to circumcenter
                 p[1] = (x - x2) * (x - x2) + (y - y2) * (y - y2);
                 p[2] = x;
@@ -3914,10 +3912,10 @@ namespace TriangleNet
             }// *NOT* BETWEEN THE POINTS
             else
             {
-                p[0] = 0.0;
-                p[1] = 0.0;
-                p[2] = 0.0;
-                p[3] = 0.0;
+                p[0] = 0.0f;
+                p[1] = 0.0f;
+                p[2] = 0.0f;
+                p[3] = 0.0f;
             }
         }
 
@@ -3932,16 +3930,16 @@ namespace TriangleNet
         /// <param name="x3"></param>
         /// <param name="y3"></param>
         /// <returns>Returns true, if it is a BAD triangle, returns false if it is a GOOD triangle.</returns>
-        private bool IsBadTriangleAngle(double x1, double y1, double x2, double y2, double x3, double y3)
+        private bool IsBadTriangleAngle(float x1, float y1, float x2, float y2, float x3, float y3)
         {
             // variables keeping the distance values for the edges
-            double dxod, dyod, dxda, dyda, dxao, dyao;
-            double dxod2, dyod2, dxda2, dyda2, dxao2, dyao2;
+            float dxod, dyod, dxda, dyda, dxao, dyao;
+            float dxod2, dyod2, dxda2, dyda2, dxao2, dyao2;
 
-            double apexlen, orglen, destlen, minedge;
-            double angle;    // in order to check minimum angle condition 
+            float apexlen, orglen, destlen, minedge;
+            float angle;    // in order to check minimum angle condition 
 
-            double maxangle, maxedge;    // in order to check minimum angle condition
+            float maxangle, maxedge;    // in order to check minimum angle condition
             // calculate the side lengths
 
             dxod = x1 - x2;
@@ -3999,26 +3997,26 @@ namespace TriangleNet
                 // The edge opposite the apex is longest.
                 maxedge = apexlen;
                 // Find the cosine of the angle at the apex.
-                maxangle = (orglen + destlen - apexlen) / (2 * Math.Sqrt(orglen * destlen));
+                maxangle = (orglen + destlen - apexlen) / (2 * UnityEngine.Mathf.Sqrt(orglen * destlen));
             }
             else if (orglen > destlen)
             {
                 // The edge opposite the origin is longest.
                 maxedge = orglen;
                 // Find the cosine of the angle at the origin.
-                maxangle = (apexlen + destlen - orglen) / (2 * Math.Sqrt(apexlen * destlen));
+                maxangle = (apexlen + destlen - orglen) / (2 * UnityEngine.Mathf.Sqrt(apexlen * destlen));
             }
             else
             {
                 // The edge opposite the destination is longest.
                 maxedge = destlen;
                 // Find the cosine of the angle at the destination.
-                maxangle = (apexlen + orglen - destlen) / (2 * Math.Sqrt(apexlen * orglen));
+                maxangle = (apexlen + orglen - destlen) / (2 * UnityEngine.Mathf.Sqrt(apexlen * orglen));
             }
 
 
             // Check whether the angle is smaller than permitted.
-            if ((angle > behavior.goodAngle) || (behavior.MaxAngle != 0.00 && maxangle < behavior.maxGoodAngle))
+            if ((angle > behavior.goodAngle) || (behavior.MaxAngle != 0.00f && maxangle < behavior.maxGoodAngle))
             {
                 return true;// it is a bad triangle
             }
@@ -4034,12 +4032,12 @@ namespace TriangleNet
         /// <param name="newlocY"></param>
         /// <param name="searchtri"></param>
         /// <returns></returns>
-        private double MinDistanceToNeighbor(double newlocX, double newlocY, ref Otri searchtri)
+        private float MinDistanceToNeighbor(float newlocX, float newlocY, ref Otri searchtri)
         {
             Otri horiz = default(Otri);	// for search operation
             LocateResult intersect = LocateResult.Outside;
             Vertex v1, v2, v3, torg, tdest;
-            double d1, d2, d3, ahead;
+            float d1, d2, d3, ahead;
             //triangle ptr;                         // Temporary variable used by sym().
 
             Point newvertex = new Point(newlocX, newlocY);
@@ -4102,7 +4100,7 @@ namespace TriangleNet
             {
                 // set distance to 0
                 //m.VertexDealloc(newvertex);
-                return 0.0;
+                return 0.0f;
             }
             else
             { // intersect == ONEDGE || intersect == INTRIANGLE

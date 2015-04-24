@@ -32,19 +32,19 @@ namespace TriangleNet.Algorithm
             BoundingBox box = mesh.bounds;
 
             // Find the width (or height, whichever is larger) of the triangulation.
-            double width = box.Width;
+            float width = box.Width;
             if (box.Height > width)
             {
                 width = box.Height;
             }
-            if (width == 0.0)
+            if (width == 0.0f)
             {
-                width = 1.0;
+                width = 1.0f;
             }
             // Create the vertices of the bounding box.
-            mesh.infvertex1 = new Vertex(box.Xmin - 50.0 * width, box.Ymin - 40.0 * width);
-            mesh.infvertex2 = new Vertex(box.Xmax + 50.0 * width, box.Ymin - 40.0 * width);
-            mesh.infvertex3 = new Vertex(0.5 * (box.Xmin + box.Xmax), box.Ymax + 60.0 * width);
+            mesh.infvertex1 = new Vertex(box.Xmin - 50.0f * width, box.Ymin - 40.0f * width);
+            mesh.infvertex2 = new Vertex(box.Xmax + 50.0f * width, box.Ymin - 40.0f * width);
+            mesh.infvertex3 = new Vertex(0.5f * (box.Xmin + box.Xmax), box.Ymax + 60.0f * width);
 
             // Create the bounding box.
             mesh.MakeTriangle(ref inftri);

@@ -20,7 +20,7 @@ public static class InputGeometryExtensions
         foreach (var pt in points)
         {
             geometry.AddPoint(pt.X, pt.Y, pt.Boundary, pt.Attributes);
-            m++;
+            m++; 
         }
 
         for (int i = 0; i < m; i++)
@@ -44,8 +44,8 @@ public static class InputGeometryExtensions
         int N = geometry.Count;
 
         // Hole coordinates
-        double x = 0.0;
-        double y = 0.0;
+        float x = 0.0f;
+        float y = 0.0f;
 
         int m = 0;
         foreach (var pt in points)

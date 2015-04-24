@@ -60,54 +60,54 @@ namespace TriangleNet.Tools
 
         #region Properties
 
-        double minEdge = 0;
+        float minEdge = 0;
         /// <summary>
         /// Gets the shortest edge.
         /// </summary>
-        public double ShortestEdge { get { return minEdge; } }
+        public float ShortestEdge { get { return minEdge; } }
 
-        double maxEdge = 0;
+        float maxEdge = 0;
         /// <summary>
         /// Gets the longest edge.
         /// </summary>
-        public double LongestEdge { get { return maxEdge; } }
+        public float LongestEdge { get { return maxEdge; } }
 
         //
-        double minAspect = 0;
+        float minAspect = 0;
         /// <summary>
         /// Gets the shortest altitude.
         /// </summary>
-        public double ShortestAltitude { get { return minAspect; } }
+        public float ShortestAltitude { get { return minAspect; } }
 
-        double maxAspect = 0;
+        float maxAspect = 0;
         /// <summary>
         /// Gets the largest aspect ratio.
         /// </summary>
-        public double LargestAspectRatio { get { return maxAspect; } }
+        public float LargestAspectRatio { get { return maxAspect; } }
 
-        double minArea = 0;
+        float minArea = 0;
         /// <summary>
         /// Gets the smallest area.
         /// </summary>
-        public double SmallestArea { get { return minArea; } }
+        public float SmallestArea { get { return minArea; } }
 
-        double maxArea = 0;
+        float maxArea = 0;
         /// <summary>
         /// Gets the largest area.
         /// </summary>
-        public double LargestArea { get { return maxArea; } }
+        public float LargestArea { get { return maxArea; } }
 
-        double minAngle = 0;
+        float minAngle = 0;
         /// <summary>
         /// Gets the smallest angle.
         /// </summary>
-        public double SmallestAngle { get { return minAngle; } }
+        public float SmallestAngle { get { return minAngle; } }
 
-        double maxAngle = 0;
+        float maxAngle = 0;
         /// <summary>
         /// Gets the largest angle.
         /// </summary>
-        public double LargestAngle { get { return maxAngle; } }
+        public float LargestAngle { get { return maxAngle; } }
 
         int inVetrices = 0;
         /// <summary>
@@ -194,22 +194,22 @@ namespace TriangleNet.Tools
         private void GetAspectHistogram(Mesh mesh)
         {
             int[] aspecttable;
-            double[] ratiotable;
+            float[] ratiotable;
 
             aspecttable = new int[16];
-            ratiotable = new double[] { 
-                1.5, 2.0, 2.5, 3.0, 4.0, 6.0, 10.0, 15.0, 25.0, 50.0, 
-                100.0, 300.0, 1000.0, 10000.0, 100000.0, 0.0 };
+            ratiotable = new float[] { 
+                1.5f, 2.0f, 2.5f, 3.0f, 4.0f, 6.0f, 10.0f, 15.0f, 25.0f, 50.0f, 
+                100.0f, 300.0f, 1000.0f, 10000.0f, 100000.0f, 0.0f };
 
 
             Otri tri = default(Otri);
             Vertex[] p = new Vertex[3];
-            double[] dx = new double[3], dy = new double[3];
-            double[] edgelength = new double[3];
-            double triarea;
-            double trilongest2;
-            double triminaltitude2;
-            double triaspect2;
+            float[] dx = new float[3], dy = new float[3];
+            float[] edgelength = new float[3];
+            float triarea;
+            float trilongest2;
+            float triminaltitude2;
+            float triaspect2;
 
             int aspectindex;
             int i, j, k;
@@ -221,7 +221,7 @@ namespace TriangleNet.Tools
                 p[0] = tri.Org();
                 p[1] = tri.Dest();
                 p[2] = tri.Apex();
-                trilongest2 = 0.0;
+                trilongest2 = 0.0f;
 
                 for (i = 0; i < 3; i++)
                 {
@@ -237,8 +237,8 @@ namespace TriangleNet.Tools
                 }
 
                 //triarea = Primitives.CounterClockwise(p[0], p[1], p[2]);
-                triarea = Math.Abs((p[2].x - p[0].x) * (p[1].y - p[0].y) -
-                    (p[1].x - p[0].x) * (p[2].y - p[0].y)) / 2.0;
+                triarea = UnityEngine.Mathf.Abs((p[2].x - p[0].x) * (p[1].y - p[0].y) -
+                    (p[1].x - p[0].x) * (p[2].y - p[0].y)) / 2.0f;
 
                 triminaltitude2 = triarea * triarea / trilongest2;
 
@@ -284,19 +284,19 @@ namespace TriangleNet.Tools
             //sampleDegrees = 45; // sample every 4 degrees
             sampleDegrees = 60; // sample every 3 degrees
 
-            double[] cosSquareTable = new double[sampleDegrees / 2 - 1];
-            double[] dx = new double[3];
-            double[] dy = new double[3];
-            double[] edgeLength = new double[3];
-            double dotProduct;
-            double cosSquare;
-            double triArea;
-            double triLongest2;
-            double triMinAltitude2;
-            double triAspect2;
+            float[] cosSquareTable = new float[sampleDegrees / 2 - 1];
+            float[] dx = new float[3];
+            float[] dy = new float[3];
+            float[] edgeLength = new float[3];
+            float dotProduct;
+            float cosSquare;
+            float triArea;
+            float triLongest2;
+            float triMinAltitude2;
+            float triAspect2;
 
-            double radconst = Math.PI / sampleDegrees;
-            double degconst = 180.0 / Math.PI;
+            float radconst = UnityEngine.Mathf.PI / sampleDegrees;
+            float degconst = 180.0f / UnityEngine.Mathf.PI;
 
             // New angle table
             angleTable = new int[sampleDegrees];
@@ -305,7 +305,7 @@ namespace TriangleNet.Tools
 
             for (int i = 0; i < sampleDegrees / 2 - 1; i++)
             {
-                cosSquareTable[i] = Math.Cos(radconst * (i + 1));
+                cosSquareTable[i] = UnityEngine.Mathf.Cos(radconst * (i + 1));
                 cosSquareTable[i] = cosSquareTable[i] * cosSquareTable[i];
             }
             for (int i = 0; i < sampleDegrees; i++)
@@ -315,18 +315,18 @@ namespace TriangleNet.Tools
 
             minAspect = mesh.bounds.Width + mesh.bounds.Height;
             minAspect = minAspect * minAspect;
-            maxAspect = 0.0;
+            maxAspect = 0.0f;
             minEdge = minAspect;
-            maxEdge = 0.0;
+            maxEdge = 0.0f;
             minArea = minAspect;
-            maxArea = 0.0;
-            minAngle = 0.0;
-            maxAngle = 2.0;
+            maxArea = 0.0f;
+            minAngle = 0.0f;
+            maxAngle = 2.0f;
 
             bool acuteBiggest = true;
             bool acuteBiggestTri = true;
 
-            double triMinAngle, triMaxAngle = 1;
+            float triMinAngle, triMaxAngle = 1;
 
             foreach (var tri in mesh.triangles.Values)
             {
@@ -337,7 +337,7 @@ namespace TriangleNet.Tools
                 p[1] = tri.vertices[1];
                 p[2] = tri.vertices[2];
 
-                triLongest2 = 0.0;
+                triLongest2 = 0.0f;
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -366,7 +366,7 @@ namespace TriangleNet.Tools
                 }
 
                 //triarea = Primitives.CounterClockwise(p[0], p[1], p[2]);
-                triArea = Math.Abs((p[2].X - p[0].X) * (p[1].Y - p[0].Y) -
+                triArea = UnityEngine.Mathf.Abs((p[2].X - p[0].X) * (p[1].Y - p[0].Y) -
                     (p[1].X - p[0].X) * (p[2].Y - p[0].Y));
 
                 if (triArea < minArea)
@@ -483,34 +483,34 @@ namespace TriangleNet.Tools
                 acuteBiggestTri = true;
             }
 
-            minEdge = Math.Sqrt(minEdge);
-            maxEdge = Math.Sqrt(maxEdge);
-            minAspect = Math.Sqrt(minAspect);
-            maxAspect = Math.Sqrt(maxAspect);
-            minArea *= 0.5;
-            maxArea *= 0.5;
-            if (minAngle >= 1.0)
+            minEdge = UnityEngine.Mathf.Sqrt(minEdge);
+            maxEdge = UnityEngine.Mathf.Sqrt(maxEdge);
+            minAspect = UnityEngine.Mathf.Sqrt(minAspect);
+            maxAspect = UnityEngine.Mathf.Sqrt(maxAspect);
+            minArea *= 0.5f;
+            maxArea *= 0.5f;
+            if (minAngle >= 1.0f)
             {
-                minAngle = 0.0;
+                minAngle = 0.0f;
             }
             else
             {
-                minAngle = degconst * Math.Acos(Math.Sqrt(minAngle));
+                minAngle = degconst * UnityEngine.Mathf.Acos(UnityEngine.Mathf.Sqrt(minAngle));
             }
 
-            if (maxAngle >= 1.0)
+            if (maxAngle >= 1.0f)
             {
-                maxAngle = 180.0;
+                maxAngle = 180.0f;
             }
             else
             {
                 if (acuteBiggest)
                 {
-                    maxAngle = degconst * Math.Acos(Math.Sqrt(maxAngle));
+                    maxAngle = degconst * UnityEngine.Mathf.Acos(UnityEngine.Mathf.Sqrt(maxAngle));
                 }
                 else
                 {
-                    maxAngle = 180.0 - degconst * Math.Acos(Math.Sqrt(maxAngle));
+                    maxAngle = 180.0f - degconst * UnityEngine.Mathf.Acos(UnityEngine.Mathf.Sqrt(maxAngle));
                 }
             }
         }

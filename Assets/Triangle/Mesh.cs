@@ -392,14 +392,14 @@ namespace TriangleNet
         {
             if (halfArea)
             {
-                double tmp, maxArea = 0;
+                float tmp, maxArea = 0;
 
                 foreach (var t in this.triangles.Values)
                 {
                     tmp = (t.vertices[2].x - t.vertices[0].x) * (t.vertices[1].y - t.vertices[0].y) -
                         (t.vertices[1].x - t.vertices[0].x) * (t.vertices[2].y - t.vertices[0].y);
 
-                    tmp = Math.Abs(tmp) / 2.0;
+                    tmp = UnityEngine.Mathf.Abs(tmp) / 2.0f;
 
                     if (tmp > maxArea)
                     {
@@ -419,7 +419,7 @@ namespace TriangleNet
         /// Refines the current mesh by setting a global area constraint.
         /// </summary>
         /// <param name="areaConstraint">Global area constraint.</param>
-        public void Refine(double areaConstraint)
+        public void Refine(float areaConstraint)
         {
             behavior.fixedArea = true;
             behavior.MaxArea = areaConstraint;
@@ -428,7 +428,7 @@ namespace TriangleNet
 
             // Reset option for sanity
             behavior.fixedArea = false;
-            behavior.MaxArea = -1.0;
+            behavior.MaxArea = -1.0f;
         }
 
         /// <summary>
@@ -868,7 +868,7 @@ namespace TriangleNet
             Vertex leftvertex, rightvertex, botvertex, topvertex, farvertex;
             Vertex segmentorg, segmentdest;
             int region;
-            double area;
+            float area;
             InsertVertexResult success;
             LocateResult intersect;
             bool doflip;
@@ -1210,7 +1210,7 @@ namespace TriangleNet
                             // the boundary of the triangulation. 'farvertex' might be
                             // infinite as well, but trust me, this same condition should
                             // be applied.
-                            doflip = Primitives.CounterClockwise(newvertex, rightvertex, farvertex) > 0.0;
+                            doflip = Primitives.CounterClockwise(newvertex, rightvertex, farvertex) > 0.0f;
                         }
                         else if ((rightvertex == infvertex1) ||
                                  (rightvertex == infvertex2) ||
@@ -1220,7 +1220,7 @@ namespace TriangleNet
                             // the boundary of the triangulation. 'farvertex' might be
                             // infinite as well, but trust me, this same condition should
                             // be applied.
-                            doflip = Primitives.CounterClockwise(farvertex, leftvertex, newvertex) > 0.0;
+                            doflip = Primitives.CounterClockwise(farvertex, leftvertex, newvertex) > 0.0f;
                         }
                         else if ((farvertex == infvertex1) ||
                                  (farvertex == infvertex2) ||
@@ -1302,23 +1302,23 @@ namespace TriangleNet
                             top.SetApex(leftvertex);
 
                             // Assign region.
-                            // TODO: check region ok (no Math.Min necessary)
-                            region = Math.Min(top.triangle.region, horiz.triangle.region);
+                            // TODO: check region ok (no UnityEngine.Mathf.Min necessary)
+                            region = UnityEngine.Mathf.Min(top.triangle.region, horiz.triangle.region);
                             top.triangle.region = region;
                             horiz.triangle.region = region;
 
                             if (behavior.VarArea)
                             {
-                                if ((top.triangle.area <= 0.0) || (horiz.triangle.area <= 0.0))
+                                if ((top.triangle.area <= 0.0f) || (horiz.triangle.area <= 0.0f))
                                 {
-                                    area = -1.0;
+                                    area = -1.0f;
                                 }
                                 else
                                 {
                                     // Take the average of the two triangles' area constraints.
                                     // This prevents small area constraints from migrating a
                                     // long, long way from their original location due to flips.
-                                    area = 0.5 * (top.triangle.area + horiz.triangle.area);
+                                    area = 0.5f * (top.triangle.area + horiz.triangle.area);
                                 }
 
                                 top.triangle.area = area;
@@ -2005,7 +2005,7 @@ namespace TriangleNet
             Otri checktri = default(Otri);
             Vertex startvertex;
             Vertex leftvertex, rightvertex;
-            double leftccw, rightccw;
+            float leftccw, rightccw;
             bool leftflag, rightflag;
 
             startvertex = searchtri.Org();
@@ -2098,10 +2098,10 @@ namespace TriangleNet
             Vertex newvertex;
             InsertVertexResult success;
 
-            double ex, ey;
-            double tx, ty;
-            double etx, ety;
-            double split, denom;
+            float ex, ey;
+            float tx, ty;
+            float etx, ety;
+            float split, denom;
 
             // Find the other three segment endpoints.
             endpoint1 = splittri.Apex();
@@ -2431,7 +2431,7 @@ namespace TriangleNet
             Osub crosssubseg = default(Osub);
             Vertex endpoint1;
             Vertex farvertex;
-            double area;
+            float area;
             bool collision;
             bool done;
 
