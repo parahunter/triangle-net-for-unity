@@ -5,7 +5,7 @@ using TriangleNet.Geometry;
 
 public class TestScript : MonoBehaviour 
 {
-    TriangleNet.Mesh mesh;
+    TriangleNet.Mesh meshRepresentation;
     InputGeometry geometry;
 
     public float distance = 5;
@@ -14,6 +14,10 @@ public class TestScript : MonoBehaviour
 
     public Color gizmoColor;
     public float boxWidth = 1f;
+    public float zOffset = 0.5f;
+
+    Mesh mesh;
+
 
 	// Use this for initialization
 	void Start () 
@@ -53,25 +57,66 @@ public class TestScript : MonoBehaviour
                     continue;
 
                 //points.Add(new Point((double)pos.x, (double)pos.y));
-                geometry.AddPoint( (double)pos.x, (double)pos.y);
+                geometry.AddPoint( (double)pos.x, (double)pos.y, 0);
             }
         }
 
-        mesh = new TriangleNet.Mesh();
-        mesh.Triangulate(geometry);
-	    
+        meshRepresentation = new TriangleNet.Mesh();
+        meshRepresentation.Triangulate(geometry);
 
         
+
+
+        Dictionary<int, float> zOffsets = new Dictionary<int, float>();
+        
+        foreach(KeyValuePair<int, TriangleNet.Data.Vertex> pair in meshRepresentation.vertices)
+        {
+            zOffsets.Add(pair.Key, Random.RandomRange(-zOffset, zOffset));
+        }
+        
+        int triangleIndex = 0;
+        List<Vector3> vertices = new List<Vector3>(meshRepresentation.triangles.Count * 3);
+        List<int> triangleIndices = new List<int>(meshRepresentation.triangles.Count * 3);
+
+        foreach(KeyValuePair<int, TriangleNet.Data.Triangle> pair in meshRepresentation.triangles)
+        {
+            TriangleNet.Data.Triangle triangle = pair.Value;
+
+            TriangleNet.Data.Vertex vertex0 = triangle.GetVertex(0);
+            TriangleNet.Data.Vertex vertex1 = triangle.GetVertex(1);
+            TriangleNet.Data.Vertex vertex2 = triangle.GetVertex(2);
+
+            Vector3 p0 = new Vector3((float) vertex0.x, (float) vertex0.y, zOffsets[vertex0.id]);
+            Vector3 p1 = new Vector3((float)vertex1.x, (float)vertex1.y, zOffsets[vertex1.id]);
+            Vector3 p2 = new Vector3((float)vertex2.x, (float)vertex2.y, zOffsets[vertex2.id]);
+
+            vertices.Add(p0);
+            vertices.Add(p1);
+            vertices.Add(p2);
+
+            triangleIndices.Add(triangleIndex + 2);
+            triangleIndices.Add(triangleIndex + 1);
+            triangleIndices.Add(triangleIndex);
+
+            triangleIndex += 3;
+        }
+
+        mesh = new Mesh();
+        mesh.vertices = vertices.ToArray();
+        mesh.triangles = triangleIndices.ToArray();
+        mesh.RecalculateNormals();
+
+        GetComponent<MeshFilter>().mesh = mesh;
 	}
 	
     void OnDrawGizmos()
     {
-        if (mesh == null)
+        if (meshRepresentation == null)
             return;
 
         Gizmos.color = gizmoColor;
 
-        foreach(KeyValuePair<int, TriangleNet.Data.Triangle> pair in mesh.triangles)
+        foreach(KeyValuePair<int, TriangleNet.Data.Triangle> pair in meshRepresentation.triangles)
         {
             TriangleNet.Data.Triangle triangle = pair.Value;
 
