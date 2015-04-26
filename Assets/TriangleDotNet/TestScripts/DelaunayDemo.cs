@@ -16,7 +16,6 @@ public class DelaunayDemo : MonoBehaviour
     public UPolygon logoOutline;
     public UPolygon[] holes; 
 
-    public Color gizmoColor;
     public float boxWidth = 1f;
     public float zOffset = 0.5f;
 
@@ -133,10 +132,10 @@ public class DelaunayDemo : MonoBehaviour
         if (holes.Length <= 0)
             return;
 
-        Gizmos.color = Color.red;
+        Gizmos.color = Color.black;
         logoOutline.GizmoDraw();
 
-        Gizmos.color = Color.green;
+        Gizmos.color = Color.white;
         foreach(UPolygon hole in holes)
         {
             hole.GizmoDraw();
@@ -145,7 +144,7 @@ public class DelaunayDemo : MonoBehaviour
         if (meshRepresentation == null)
             return;
 
-        Gizmos.color = gizmoColor;
+        Gizmos.color = Color.cyan;
 
         foreach(KeyValuePair<int, TriangleNet.Data.Triangle> pair in meshRepresentation.triangles)
         {
