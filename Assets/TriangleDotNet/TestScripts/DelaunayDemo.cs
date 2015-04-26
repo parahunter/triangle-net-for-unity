@@ -163,9 +163,4 @@ public class DelaunayDemo : MonoBehaviour
             Gizmos.DrawLine(p2, p0);
         }
     }
-
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }
