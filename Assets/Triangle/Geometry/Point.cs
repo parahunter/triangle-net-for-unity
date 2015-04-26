@@ -6,6 +6,7 @@
 
 namespace TriangleNet.Geometry
 {
+    using UnityEngine;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -17,8 +18,31 @@ namespace TriangleNet.Geometry
     public class Point : IComparable<Point>, IEquatable<Point>
     {
         internal int id;
-        internal float x;
-        internal float y;
+        public Vector2 coordinates;
+        public float x
+        {
+            get
+            {
+                return coordinates.x;
+            }
+            set
+            {
+                coordinates.x = value;
+            }
+        }
+
+        public float y
+        {
+            get
+            {
+                return coordinates.y;
+            }
+            set
+            {
+                coordinates.y = value;
+            }
+        }
+
         internal int mark;
         internal float[] attributes;
 
@@ -34,9 +58,14 @@ namespace TriangleNet.Geometry
 
         public Point(float x, float y, int mark)
         {
-            this.x = x;
-            this.y = y;
+            this.coordinates.x = x;
+            this.coordinates.y = y;
             this.mark = mark;
+        }
+
+        public Point(Vector2 coordinates)
+        {
+            this.coordinates = coordinates;
         }
 
         #region Public properties
@@ -91,7 +120,7 @@ namespace TriangleNet.Geometry
         public static bool operator ==(Point a, Point b)
         {
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(a, b))
+            if (System.Object.ReferenceEquals(a, b))
             {
                 return true;
             }

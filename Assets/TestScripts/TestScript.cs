@@ -9,8 +9,11 @@ public class TestScript : MonoBehaviour
     InputGeometry geometry;
 
     public float distance = 5;
+    public float verticalDistance = 2;
     public float boxDistance = 1f;
     public float circleDistance = 0.7f;
+
+    public UPolygon[] holes;
 
     public Color gizmoColor;
     public float boxWidth = 1f;
@@ -18,32 +21,77 @@ public class TestScript : MonoBehaviour
 
     Mesh mesh;
 
-
 	// Use this for initialization
 	void Start () 
     {
         geometry = new InputGeometry();
         List<Point> points = new List<Point>();
 
-        points.Add(new Point((float)distance, (float)distance));
-        points.Add(new Point((float)distance, (float)-distance));
-        points.Add(new Point((float)-distance, (float)-distance));
-        points.Add(new Point((float)-distance, (float)distance));
+        points.Add(new Point((float)distance, (float)verticalDistance));
+        points.Add(new Point((float)distance, (float)-verticalDistance));
+        points.Add(new Point((float)-distance, (float)-verticalDistance));
+        points.Add(new Point((float)-distance, (float)verticalDistance));
 
         geometry.AddRing(points, 0);
+        int counter = 0;
+        {
+            UPolygon hole = holes[0];
+            List<Point> holePoints = new List<Point>(hole.points.Length);
 
-        List<Point> hole = new List<Point>();
-        hole.Add(new Point((float)boxWidth, (float)boxWidth));
-        hole.Add(new Point((float)boxWidth, (float)0));
-        hole.Add(new Point((float)boxWidth, (float)-boxWidth));
-        hole.Add(new Point((float)-boxWidth, (float)-boxWidth));
-        hole.Add(new Point((float)-boxWidth, (float)boxWidth));
-        geometry.AddRingAsHole(hole, 1);
+            foreach (Vector2 coordinates in hole.points)
+                holePoints.Add(new Point(coordinates));
+
+            geometry.AddRingAsHole(holePoints, counter);
+            counter++;
+        }
+
+
+        {
+            UPolygon hole = holes[1];
+            List<Point> holePoints = new List<Point>(hole.points.Length);
+
+            foreach (Vector2 coordinates in hole.points)
+                holePoints.Add(new Point(coordinates));
+
+            geometry.AddRing(holePoints);
+            counter++;
+        }
+
+        {
+            UPolygon hole = holes[2];
+            List<Point> holePoints = new List<Point>(hole.points.Length);
+
+            foreach (Vector2 coordinates in hole.points)
+                holePoints.Add(new Point(coordinates));
+
+            geometry.AddRing(holePoints);
+            counter++;
+        }
+
+
+        {
+            UPolygon hole = holes[3];
+            List<Point> holePoints = new List<Point>(hole.points.Length);
+
+            foreach (Vector2 coordinates in hole.points)
+                holePoints.Add(new Point(coordinates));
+
+            geometry.AddRing(holePoints);
+            counter++;
+        }
+
+        //List<Point> hole = new List<Point>();
+        //hole.Add(new Point((float)boxWidth, (float)boxWidth));
+        //hole.Add(new Point((float)boxWidth, (float)0));
+        //hole.Add(new Point((float)boxWidth, (float)-boxWidth));
+        //hole.Add(new Point((float)-boxWidth, (float)-boxWidth));
+        //hole.Add(new Point((float)-boxWidth, (float)boxWidth));
+        //geometry.AddRingAsHole(hole, 1);
 
         for (float offsetX = -distance; offsetX < distance; offsetX += boxDistance)
         {
             // float offsetY = -distance;
-            for (float offsetY = -distance; offsetY < distance; offsetY += boxDistance)
+            for (float offsetY = -verticalDistance; offsetY < verticalDistance; offsetY += boxDistance)
             {
                 Vector2 offset = new Vector2(offsetX, offsetY) + Vector2.one * boxDistance * 0.5f;
 
@@ -53,19 +101,22 @@ public class TestScript : MonoBehaviour
                 Vector2 pos = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians)) * length;
                 pos += offset;
 
-                if (Mathf.Abs(pos.x) < boxWidth && Mathf.Abs(pos.y) < boxWidth)
-                    continue;
+                bool inHole = holes[0].PointInPolygon(pos);
 
-                //points.Add(new Point((float)pos.x, (float)pos.y));
-                geometry.AddPoint( (float)pos.x, (float)pos.y, 0);
+                bool stillAlloved = false;
+                for (int i = 1; i < holes.Length; i++ )
+                {
+                    if (holes[i].PointInPolygon(pos))
+                        stillAlloved = true;
+                }
+
+                if (!inHole || stillAlloved)
+                    geometry.AddPoint((float)pos.x, (float)pos.y, 0);
             }
         }
 
         meshRepresentation = new TriangleNet.Mesh();
         meshRepresentation.Triangulate(geometry);
-
-        
-
 
         Dictionary<int, float> zOffsets = new Dictionary<int, float>();
         
@@ -114,6 +165,15 @@ public class TestScript : MonoBehaviour
 	
     void OnDrawGizmos()
     {
+        if (holes.Length <= 0)
+            return;
+
+        Gizmos.color = Color.red;
+        foreach(UPolygon hole in holes)
+        {
+            hole.GizmoDraw();
+        }
+
         if (meshRepresentation == null)
             return;
 
