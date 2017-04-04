@@ -19,9 +19,6 @@ namespace TriangleNet.Tools
         // Number of nodes in the mesh.
         int node_num;
 
-        // Number of adjacency entries.
-        int adj_num;
-
         // Pointers into the actual adjacency structure adj. Information about row k is
         // stored in entries adj_row(k) through adj_row(k+1)-1 of adj. Size: node_num + 1
         int[] adj_row;
@@ -42,14 +39,13 @@ namespace TriangleNet.Tools
 
         public AdjacencyMatrix(Mesh mesh)
         {
-            this.node_num = mesh.vertices.Count;
+            node_num = mesh.vertices.Count;
 
             // Set up the adj_row adjacency pointer array.
-            this.adj_row = AdjacencyCount(mesh);
-            this.adj_num = adj_row[node_num] - 1;
+            adj_row = AdjacencyCount(mesh);
 
             // Set up the adj adjacency array.
-            this.adj = AdjacencySet(mesh, this.adj_row);
+            adj = AdjacencySet(mesh, adj_row);
         }
 
         /// <summary>

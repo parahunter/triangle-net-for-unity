@@ -25,9 +25,6 @@ namespace TriangleNet
 
         NewLocation newLocation;
 
-        // Not used at the moment
-        Func<Point, Point, Point, float, bool> userTest;
-
         ILog<SimpleLogItem> logger;
 
         public Quality(Mesh mesh)
@@ -438,16 +435,6 @@ namespace TriangleNet
                     // Add this triangle to the list of bad triangles.
                     queue.Enqueue(ref testtri, minedge, tapex, torg, tdest);
                     return;
-                }
-
-                // Check whether the user thinks this triangle is too large.
-                if (behavior.Usertest && userTest != null)
-                {
-                    if (userTest(torg, tdest, tapex, area))
-                    {
-                        queue.Enqueue(ref testtri, minedge, tapex, torg, tdest);
-                        return;
-                    }
                 }
             }
 
