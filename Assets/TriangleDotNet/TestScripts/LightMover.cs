@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public class LightMover : MonoBehaviour 
 {
-    
 
     void Update()
     {
@@ -13,4 +11,5 @@ public class LightMover : MonoBehaviour
 
         transform.position = worldPos;
     }
+
 }

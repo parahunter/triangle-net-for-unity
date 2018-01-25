@@ -78,7 +78,7 @@ namespace TriangleNet
 
             ////////////////////////////// HALE'S VARIABLES //////////////////////////////
             // keeps the difference of coordinates edge 
-            float xShortestEdge = 0, yShortestEdge = 0, xMiddleEdge, yMiddleEdge, xLongestEdge, yLongestEdge;
+            float xShortestEdge = 0, yShortestEdge = 0;
 
             // keeps the square of edge lengths
             float shortestEdgeDist = 0, middleEdgeDist = 0, longestEdgeDist = 0;
@@ -88,7 +88,7 @@ namespace TriangleNet
 
             // keeps the type of orientation if the triangle
             int orientation = 0;
-            // keeps the coordinates of circumcenter of itself and neighbor triangle circumcenter	
+            // keeps the coordinates of circumcenter of itself and neighbor triangle circumcenter
             Point myCircumcenter, neighborCircumcenter;
 
             // keeps if bad triangle is almost good or not
@@ -191,12 +191,10 @@ namespace TriangleNet
 
             switch (orientation)
             {
-                case 123: 	// assign necessary information
+                case 123: // assign necessary information
                     /// smallest angle corner: dest
                     /// largest angle corner: apex
                     xShortestEdge = xao; yShortestEdge = yao;
-                    xMiddleEdge = xda; yMiddleEdge = yda;
-                    xLongestEdge = xdo; yLongestEdge = ydo;
 
                     shortestEdgeDist = aodist;
                     middleEdgeDist = dadist;
@@ -207,12 +205,10 @@ namespace TriangleNet
                     largestAngleCorner = tapex;
                     break;
 
-                case 132: 	// assign necessary information
+                case 132: // assign necessary information
                     /// smallest angle corner: dest
                     /// largest angle corner: org
                     xShortestEdge = xao; yShortestEdge = yao;
-                    xMiddleEdge = xdo; yMiddleEdge = ydo;
-                    xLongestEdge = xda; yLongestEdge = yda;
 
                     shortestEdgeDist = aodist;
                     middleEdgeDist = dodist;
@@ -223,12 +219,10 @@ namespace TriangleNet
                     largestAngleCorner = torg;
 
                     break;
-                case 213: 	// assign necessary information
+                case 213: // assign necessary information
                     /// smallest angle corner: org
                     /// largest angle corner: apex
                     xShortestEdge = xda; yShortestEdge = yda;
-                    xMiddleEdge = xao; yMiddleEdge = yao;
-                    xLongestEdge = xdo; yLongestEdge = ydo;
 
                     shortestEdgeDist = dadist;
                     middleEdgeDist = aodist;
@@ -238,12 +232,10 @@ namespace TriangleNet
                     middleAngleCorner = tdest;
                     largestAngleCorner = tapex;
                     break;
-                case 231: 	// assign necessary information
+                case 231: // assign necessary information
                     /// smallest angle corner: org
                     /// largest angle corner: dest
                     xShortestEdge = xda; yShortestEdge = yda;
-                    xMiddleEdge = xdo; yMiddleEdge = ydo;
-                    xLongestEdge = xao; yLongestEdge = yao;
 
                     shortestEdgeDist = dadist;
                     middleEdgeDist = dodist;
@@ -253,12 +245,10 @@ namespace TriangleNet
                     middleAngleCorner = tapex;
                     largestAngleCorner = tdest;
                     break;
-                case 312: 	// assign necessary information
+                case 312: // assign necessary information
                     /// smallest angle corner: apex
                     /// largest angle corner: org
                     xShortestEdge = xdo; yShortestEdge = ydo;
-                    xMiddleEdge = xao; yMiddleEdge = yao;
-                    xLongestEdge = xda; yLongestEdge = yda;
 
                     shortestEdgeDist = dodist;
                     middleEdgeDist = aodist;
@@ -268,13 +258,11 @@ namespace TriangleNet
                     middleAngleCorner = tdest;
                     largestAngleCorner = torg;
                     break;
-                case 321: 	// assign necessary information
+                case 321: // assign necessary information
                 default: // TODO: is this safe?
                     /// smallest angle corner: apex
                     /// largest angle corner: dest
                     xShortestEdge = xdo; yShortestEdge = ydo;
-                    xMiddleEdge = xda; yMiddleEdge = yda;
-                    xLongestEdge = xao; yLongestEdge = yao;
 
                     shortestEdgeDist = dodist;
                     middleEdgeDist = dadist;
@@ -285,7 +273,7 @@ namespace TriangleNet
                     largestAngleCorner = tdest;
                     break;
 
-            }// end of switch	
+            }// end of switch
             // check for offcenter condition
             if (offcenter && (offconstant > 0.0f))
             {
@@ -297,7 +285,7 @@ namespace TriangleNet
                     dyoff = 0.5f * yShortestEdge + offconstant * xShortestEdge;
                     // If the off-center is closer to destination than the
                     //   circumcenter, use the off-center instead.
-                    /// doubleLY BAD CASE ///			
+                    /// doubleLY BAD CASE ///
                     if (dxoff * dxoff + dyoff * dyoff <
                         (dx - xdo) * (dx - xdo) + (dy - ydo) * (dy - ydo))
                     {
@@ -309,7 +297,7 @@ namespace TriangleNet
                     {
                         almostGood = 1;
                     }
-                    // destination has the smallest angle	
+                    // destination has the smallest angle
                 }
                 else if (orientation == 123 || orientation == 132)
                 {
@@ -344,7 +332,7 @@ namespace TriangleNet
                         dx = dxoff;
                         dy = dyoff;
                     }
-                    /// ALMOST GOOD CASE ///		
+                    /// ALMOST GOOD CASE ///
                     else
                     {
                         almostGood = 1;
@@ -373,9 +361,9 @@ namespace TriangleNet
                     isObtuse = false;
                 }
                 /// RELOCATION	(LOCAL SMOOTHING) ///
-                /// check for possible relocation of one of triangle's points ///				
+                /// check for possible relocation of one of triangle's points ///
                 relocated = DoSmoothing(delotri, torg, tdest, tapex, ref newloc);
-                /// if relocation is possible, delete that vertex and insert a vertex at the new location ///		
+                /// if relocation is possible, delete that vertex and insert a vertex at the new location ///
                 if (relocated > 0)
                 {
                     Statistic.RelocationCount++;
@@ -387,16 +375,16 @@ namespace TriangleNet
                     switch (relocated)
                     {
                         case 1:
-                            //printf("Relocate: (%f,%f)\n", torg[0],torg[1]);			
+                            //printf("Relocate: (%f,%f)\n", torg[0],torg[1]);
                             mesh.DeleteVertex(ref delotri);
                             break;
                         case 2:
-                            //printf("Relocate: (%f,%f)\n", tdest[0],tdest[1]);			
+                            //printf("Relocate: (%f,%f)\n", tdest[0],tdest[1]);
                             delotri.LnextSelf();
                             mesh.DeleteVertex(ref delotri);
                             break;
                         case 3:
-                            //printf("Relocate: (%f,%f)\n", tapex[0],tapex[1]);						
+                            //printf("Relocate: (%f,%f)\n", tapex[0],tapex[1]);
                             delotri.LprevSelf();
                             mesh.DeleteVertex(ref delotri);
                             break;
@@ -445,7 +433,7 @@ namespace TriangleNet
                     neighborNotFound = GetNeighborsVertex(badotri, middleAngleCorner.x, middleAngleCorner.y,
                                 smallestAngleCorner.x, smallestAngleCorner.y, ref thirdPoint, ref neighborotri);
                     /// find the circumcenter of the neighbor triangle ///
-                    dxFirstSuggestion = dx;	// if we cannot find any appropriate suggestion, we use circumcenter
+                    dxFirstSuggestion = dx; // if we cannot find any appropriate suggestion, we use circumcenter
                     dyFirstSuggestion = dy;
                     // if there is a neighbor triangle
                     if (!neighborNotFound)
@@ -458,7 +446,7 @@ namespace TriangleNet
                             ref xi_tmp, ref eta_tmp);
 
                         /// compute petal and Voronoi edge intersection ///
-                        // in order to avoid degenerate cases, we need to do a vector based calculation for line		
+                        // in order to avoid degenerate cases, we need to do a vector based calculation for line
                         vector_x = (middleAngleCorner.y - smallestAngleCorner.y);//(-y, x)
                         vector_y = smallestAngleCorner.x - middleAngleCorner.x;
                         vector_x = myCircumcenter.x + vector_x;
@@ -518,7 +506,7 @@ namespace TriangleNet
                             { // there is no voronoi vertex between intersection point and circumcenter
                                 if (IsBadTriangleAngle(largestAngleCorner.x, largestAngleCorner.y, middleAngleCorner.x, middleAngleCorner.y, inter_x, inter_y))
                                 {
-                                    // if it is inside feasible region, then insert v2				
+                                    // if it is inside feasible region, then insert v2
                                     // apply perturbation
                                     // find the distance between circumcenter and intersection point
                                     d = UnityEngine.Mathf.Sqrt((inter_x - myCircumcenter.x) * (inter_x - myCircumcenter.x) +
@@ -566,10 +554,10 @@ namespace TriangleNet
                                 // use circumcenter
                                 dxFirstSuggestion = dx;
                                 dyFirstSuggestion = dy;
-                            }// else we stick to what we have found	
+                            }// else we stick to what we have found
                         }// intersection point
 
-                    }// if it is on the boundary, meaning no neighbor triangle in this direction, try other direction	
+                    }// if it is on the boundary, meaning no neighbor triangle in this direction, try other direction
 
                     /// DO THE SAME THING FOR THE OTHER DIRECTION ///
                     /// find the third point of the neighbor triangle  ///
@@ -589,7 +577,7 @@ namespace TriangleNet
                             ref xi_tmp, ref eta_tmp);
 
                         /// compute petal and Voronoi edge intersection ///
-                        // in order to avoid degenerate cases, we need to do a vector based calculation for line		
+                        // in order to avoid degenerate cases, we need to do a vector based calculation for line
                         vector_x = (largestAngleCorner.y - smallestAngleCorner.y);//(-y, x)
                         vector_y = smallestAngleCorner.x - largestAngleCorner.x;
                         vector_x = myCircumcenter.x + vector_x;
@@ -653,7 +641,7 @@ namespace TriangleNet
                             { // there is no voronoi vertex between intersection point and circumcenter
                                 if (IsBadTriangleAngle(middleAngleCorner.x, middleAngleCorner.y, largestAngleCorner.x, largestAngleCorner.y, inter_x, inter_y))
                                 {
-                                    // if it is inside feasible region, then insert v2				
+                                    // if it is inside feasible region, then insert v2
                                     // apply perturbation
                                     // find the distance between circumcenter and intersection point
                                     d = UnityEngine.Mathf.Sqrt((inter_x - myCircumcenter.x) * (inter_x - myCircumcenter.x) +
@@ -703,15 +691,15 @@ namespace TriangleNet
                                 dySecondSuggestion = dy;
                             }// else we stick on what we have found	
                         }
-                    }// if it is on the boundary, meaning no neighbor triangle in this direction, the other direction might be ok		
+                    }// if it is on the boundary, meaning no neighbor triangle in this direction, the other direction might be ok
                     if (isObtuse)
                     {
-                        //obtuse: do nothing					
+                        //obtuse: do nothing
                         dx = dxFirstSuggestion;
                         dy = dyFirstSuggestion;
                     }
                     else
-                    { // acute : consider other direction				
+                    { // acute : consider other direction
                         if (justAcute * ((smallestAngleCorner.x - (dxSecondSuggestion + torg.x)) *
                                 (smallestAngleCorner.x - (dxSecondSuggestion + torg.x)) +
                                 (smallestAngleCorner.y - (dySecondSuggestion + torg.y)) *
@@ -731,8 +719,8 @@ namespace TriangleNet
                         }
 
                     }// end if obtuse
-                }// end of relocation				 
-            }// end of almostGood	
+                }// end of relocation
+            }// end of almostGood
 
             Point circumcenter = new Point();
 
@@ -777,8 +765,8 @@ namespace TriangleNet
             float dx, dy, dxoff, dyoff;
 
             ////////////////////////////// HALE'S VARIABLES //////////////////////////////
-            // keeps the difference of coordinates edge 
-            float xShortestEdge = 0, yShortestEdge = 0, xMiddleEdge, yMiddleEdge, xLongestEdge, yLongestEdge;
+            // keeps the difference of coordinates edge
+            float xShortestEdge = 0, yShortestEdge = 0;
 
             // keeps the square of edge lengths
             float shortestEdgeDist = 0, middleEdgeDist = 0, longestEdgeDist = 0;
@@ -788,7 +776,7 @@ namespace TriangleNet
 
             // keeps the type of orientation if the triangle
             int orientation = 0;
-            // keeps the coordinates of circumcenter of itself and neighbor triangle circumcenter	
+            // keeps the coordinates of circumcenter of itself and neighbor triangle circumcenter
             Point myCircumcenter, neighborCircumcenter;
 
             // keeps if bad triangle is almost good or not
@@ -876,7 +864,7 @@ namespace TriangleNet
                 // Don't count the above as an orientation test.
                 Statistic.CounterClockwiseCount--;
             }
-            // calculate the circumcenter in terms of distance to origin point 
+            // calculate the circumcenter in terms of distance to origin point
             dx = (yao * dodist - ydo * aodist) * denominator;
             dy = (xdo * aodist - xao * dodist) * denominator;
             // for debugging and for keeping circumcenter to use later
@@ -889,12 +877,12 @@ namespace TriangleNet
             //   serves as a conservative estimate of the insertion radius of the
             //   circumcenter's parent.  The estimate is used to ensure that
             //   the algorithm terminates even if very small angles appear in
-            //   the input PSLG. 						
+            //   the input PSLG.
             // find the orientation of the triangle, basically shortest and longest edges
             orientation = LongestShortestEdge(aodist, dadist, dodist);
             //printf("org: (%f,%f), dest: (%f,%f), apex: (%f,%f)\n",torg[0],torg[1],tdest[0],tdest[1],tapex[0],tapex[1]);
             /////////////////////////////////////////////////////////////////////////////////////////////
-            // 123: shortest: aodist	// 213: shortest: dadist	// 312: shortest: dodist   //	
+            // 123: shortest: aodist	// 213: shortest: dadist	// 312: shortest: dodist   //
             //	middle: dadist 		//	middle: aodist 		//	middle: aodist     //
             //	longest: dodist		//	longest: dodist		//	longest: dadist    //
             // 132: shortest: aodist 	// 231: shortest: dadist 	// 321: shortest: dodist   //
@@ -904,12 +892,10 @@ namespace TriangleNet
 
             switch (orientation)
             {
-                case 123: 	// assign necessary information
+                case 123: // assign necessary information
                     /// smallest angle corner: dest
                     /// largest angle corner: apex
                     xShortestEdge = xao; yShortestEdge = yao;
-                    xMiddleEdge = xda; yMiddleEdge = yda;
-                    xLongestEdge = xdo; yLongestEdge = ydo;
 
                     shortestEdgeDist = aodist;
                     middleEdgeDist = dadist;
@@ -920,12 +906,10 @@ namespace TriangleNet
                     largestAngleCorner = tapex;
                     break;
 
-                case 132: 	// assign necessary information
+                case 132: // assign necessary information
                     /// smallest angle corner: dest
                     /// largest angle corner: org
                     xShortestEdge = xao; yShortestEdge = yao;
-                    xMiddleEdge = xdo; yMiddleEdge = ydo;
-                    xLongestEdge = xda; yLongestEdge = yda;
 
                     shortestEdgeDist = aodist;
                     middleEdgeDist = dodist;
@@ -936,12 +920,10 @@ namespace TriangleNet
                     largestAngleCorner = torg;
 
                     break;
-                case 213: 	// assign necessary information
+                case 213: // assign necessary information
                     /// smallest angle corner: org
                     /// largest angle corner: apex
                     xShortestEdge = xda; yShortestEdge = yda;
-                    xMiddleEdge = xao; yMiddleEdge = yao;
-                    xLongestEdge = xdo; yLongestEdge = ydo;
 
                     shortestEdgeDist = dadist;
                     middleEdgeDist = aodist;
@@ -951,12 +933,10 @@ namespace TriangleNet
                     middleAngleCorner = tdest;
                     largestAngleCorner = tapex;
                     break;
-                case 231: 	// assign necessary information
+                case 231: // assign necessary information
                     /// smallest angle corner: org
                     /// largest angle corner: dest
                     xShortestEdge = xda; yShortestEdge = yda;
-                    xMiddleEdge = xdo; yMiddleEdge = ydo;
-                    xLongestEdge = xao; yLongestEdge = yao;
 
                     shortestEdgeDist = dadist;
                     middleEdgeDist = dodist;
@@ -966,12 +946,10 @@ namespace TriangleNet
                     middleAngleCorner = tapex;
                     largestAngleCorner = tdest;
                     break;
-                case 312: 	// assign necessary information
+                case 312: // assign necessary information
                     /// smallest angle corner: apex
                     /// largest angle corner: org
                     xShortestEdge = xdo; yShortestEdge = ydo;
-                    xMiddleEdge = xao; yMiddleEdge = yao;
-                    xLongestEdge = xda; yLongestEdge = yda;
 
                     shortestEdgeDist = dodist;
                     middleEdgeDist = aodist;
@@ -981,13 +959,11 @@ namespace TriangleNet
                     middleAngleCorner = tdest;
                     largestAngleCorner = torg;
                     break;
-                case 321: 	// assign necessary information
+                case 321: // assign necessary information
                 default: // TODO: is this safe?
                     /// smallest angle corner: apex
                     /// largest angle corner: dest
                     xShortestEdge = xdo; yShortestEdge = ydo;
-                    xMiddleEdge = xda; yMiddleEdge = yda;
-                    xLongestEdge = xao; yLongestEdge = yao;
 
                     shortestEdgeDist = dodist;
                     middleEdgeDist = dadist;
@@ -998,7 +974,7 @@ namespace TriangleNet
                     largestAngleCorner = tdest;
                     break;
 
-            }// end of switch	
+            }// end of switch
             // check for offcenter condition
             if (offcenter && (offconstant > 0.0))
             {
@@ -1010,7 +986,7 @@ namespace TriangleNet
                     dyoff = 0.5f * yShortestEdge + offconstant * xShortestEdge;
                     // If the off-center is closer to destination than the
                     //   circumcenter, use the off-center instead.
-                    /// doubleLY BAD CASE ///			
+                    /// doubleLY BAD CASE ///
                     if (dxoff * dxoff + dyoff * dyoff <
                         (dx - xdo) * (dx - xdo) + (dy - ydo) * (dy - ydo))
                     {
@@ -1037,12 +1013,12 @@ namespace TriangleNet
                         dx = dxoff;
                         dy = dyoff;
                     }
-                    /// ALMOST GOOD CASE ///		
+                    /// ALMOST GOOD CASE ///
                     else
                     {
                         almostGood = 1;
                     }
-                    // apex has the smallest angle	
+                    // apex has the smallest angle
                 }
                 else
                 {//orientation == 312 || orientation == 321 
@@ -1057,7 +1033,7 @@ namespace TriangleNet
                         dx = dxoff;
                         dy = dyoff;
                     }
-                    /// ALMOST GOOD CASE ///		
+                    /// ALMOST GOOD CASE ///
                     else
                     {
                         almostGood = 1;
@@ -1068,7 +1044,7 @@ namespace TriangleNet
             if (almostGood == 1)
             {
 
-                /// calculate cosine of largest angle	///	
+                /// calculate cosine of largest angle ///
                 cosMaxAngle = (middleEdgeDist + shortestEdgeDist - longestEdgeDist) / (2 * UnityEngine.Mathf.Sqrt(middleEdgeDist) * UnityEngine.Mathf.Sqrt(shortestEdgeDist));
                 if (cosMaxAngle < 0.0f)
                 {
@@ -1086,30 +1062,30 @@ namespace TriangleNet
                     isObtuse = false;
                 }
                 /// RELOCATION	(LOCAL SMOOTHING) ///
-                /// check for possible relocation of one of triangle's points ///				
+                /// check for possible relocation of one of triangle's points ///
                 relocated = DoSmoothing(delotri, torg, tdest, tapex, ref newloc);
-                /// if relocation is possible, delete that vertex and insert a vertex at the new location ///		
+                /// if relocation is possible, delete that vertex and insert a vertex at the new location ///
                 if (relocated > 0)
                 {
                     Statistic.RelocationCount++;
 
                     dx = newloc[0] - torg.x;
                     dy = newloc[1] - torg.y;
-                    origin_x = torg.x;	// keep for later use
+                    origin_x = torg.x; // keep for later use
                     origin_y = torg.y;
                     switch (relocated)
                     {
                         case 1:
-                            //printf("Relocate: (%f,%f)\n", torg[0],torg[1]);			
+                            //printf("Relocate: (%f,%f)\n", torg[0],torg[1]);
                             mesh.DeleteVertex(ref delotri);
                             break;
                         case 2:
-                            //printf("Relocate: (%f,%f)\n", tdest[0],tdest[1]);			
+                            //printf("Relocate: (%f,%f)\n", tdest[0],tdest[1]);
                             delotri.LnextSelf();
                             mesh.DeleteVertex(ref delotri);
                             break;
                         case 3:
-                            //printf("Relocate: (%f,%f)\n", tapex[0],tapex[1]);						
+                            //printf("Relocate: (%f,%f)\n", tapex[0],tapex[1]);
                             delotri.LprevSelf();
                             mesh.DeleteVertex(ref delotri);
                             break;
@@ -1189,7 +1165,7 @@ namespace TriangleNet
                     // we need to find correct intersection point, since there are two possibilities
                     // weather it is obtuse/acute the one closer to the minimum angle corner is the first direction
                     isCorrect = ChooseCorrectPoint(x_2, y_2, middleAngleCorner.x, middleAngleCorner.y, x_1, y_1, true);
-                    // make sure which point is the correct one to be considered				
+                    // make sure which point is the correct one to be considered
                     if (isCorrect)
                     {
                         petal_slab_inter_x_first = x_1;
@@ -1218,8 +1194,8 @@ namespace TriangleNet
                         neighborCircumcenter = Primitives.FindCircumcenter(neighborvertex_1, neighborvertex_2, neighborvertex_3,
                             ref xi_tmp, ref eta_tmp);
 
-                        /// compute petal and Voronoi edge intersection ///						
-                        // in order to avoid degenerate cases, we need to do a vector based calculation for line		
+                        /// compute petal and Voronoi edge intersection ///
+                        // in order to avoid degenerate cases, we need to do a vector based calculation for line
                         vector_x = (middleAngleCorner.y - smallestAngleCorner.y);//(-y, x)
                         vector_y = smallestAngleCorner.x - middleAngleCorner.x;
                         vector_x = myCircumcenter.x + vector_x;
@@ -1249,7 +1225,7 @@ namespace TriangleNet
                         // vector from middleAngleCorner to largestAngleCorner
                         line_vector_x = largestAngleCorner.x - middleAngleCorner.x;
                         line_vector_y = largestAngleCorner.y - middleAngleCorner.y;
-                        // rotate the vector around middleAngleCorner in cw by maxangle degrees				
+                        // rotate the vector around middleAngleCorner in cw by maxangle degrees
                         linepnt2_x = petal_slab_inter_x_first;
                         linepnt2_y = petal_slab_inter_y_first;
                         // now calculate the intersection of two lines
@@ -1424,8 +1400,8 @@ namespace TriangleNet
                                 {
                                     if (IsBadTriangleAngle(largestAngleCorner.x, largestAngleCorner.y, middleAngleCorner.x, middleAngleCorner.y, inter_x, inter_y))
                                     {
-                                        //printf("testtriangle returned false! bad triangle\n");	
-                                        // if it is inside feasible region, then insert v2				
+                                        //printf("testtriangle returned false! bad triangle\n");
+                                        // if it is inside feasible region, then insert v2
                                         // apply perturbation
                                         // find the distance between circumcenter and intersection point
                                         d = UnityEngine.Mathf.Sqrt((inter_x - myCircumcenter.x) * (inter_x - myCircumcenter.x) +
@@ -1473,7 +1449,7 @@ namespace TriangleNet
                                 dxFirstSuggestion = dx;
                                 dyFirstSuggestion = dy;
 
-                            }// else we stick to what we have found	
+                            }// else we stick to what we have found
                         }// intersection point
 
                     }// if it is on the boundary, meaning no neighbor triangle in this direction, try other direction	
@@ -1501,7 +1477,7 @@ namespace TriangleNet
                             ref xi_tmp, ref eta_tmp);
 
                         /// compute petal and Voronoi edge intersection ///
-                        // in order to avoid degenerate cases, we need to do a vector based calculation for line		
+                        // in order to avoid degenerate cases, we need to do a vector based calculation for line
                         vector_x = (largestAngleCorner.y - smallestAngleCorner.y);//(-y, x)
                         vector_y = smallestAngleCorner.x - largestAngleCorner.x;
                         vector_x = myCircumcenter.x + vector_x;
@@ -1528,14 +1504,14 @@ namespace TriangleNet
                             inter_x = p[1];
                             inter_y = p[2];
                         }
-                        //----------------------hale new second direction:for slab calculation---------------//			
+                        //----------------------hale new second direction:for slab calculation---------------//
                         // calculate the intersection of angle lines and Voronoi
                         linepnt1_x = largestAngleCorner.x;
                         linepnt1_y = largestAngleCorner.y;
                         // vector from largestAngleCorner to middleAngleCorner 
                         line_vector_x = middleAngleCorner.x - largestAngleCorner.x;
                         line_vector_y = middleAngleCorner.y - largestAngleCorner.y;
-                        // rotate the vector around largestAngleCorner in ccw by maxangle degrees				
+                        // rotate the vector around largestAngleCorner in ccw by maxangle degrees
                         linepnt2_x = petal_slab_inter_x_second;
                         linepnt2_y = petal_slab_inter_y_second;
                         // now calculate the intersection of two lines
@@ -1559,8 +1535,8 @@ namespace TriangleNet
                                 neighborCircumcenter.x, neighborCircumcenter.y, ref voronoiOrInter);
                         /// determine the point to be suggested ///
                         if (p[0] > 0.0f)
-                        { // there is at least one intersection point				
-                            // if it is between circumcenter and intersection	
+                        { // there is at least one intersection point
+                            // if it is between circumcenter and intersection
                             // if it returns 1.0 this means we have a voronoi vertex within feasible region
                             if (UnityEngine.Mathf.Abs(voronoiOrInter[0] - 1.0f) <= UnityEngine.Mathf.Epsilon)
                             {
@@ -1586,7 +1562,7 @@ namespace TriangleNet
                                         dySecondSuggestion = petal_slab_inter_y_second - torg.y;
                                     }
                                     else
-                                    { // slab intersection point is further away	
+                                    { // slab intersection point is further away
                                         if (IsBadTriangleAngle(middleAngleCorner.x, middleAngleCorner.y, largestAngleCorner.x, largestAngleCorner.y, line_inter_x, line_inter_y))
                                         {
                                             // apply perturbation
@@ -1664,7 +1640,7 @@ namespace TriangleNet
                                         dySecondSuggestion = petal_slab_inter_y_second - torg.y;
                                     }
                                     else
-                                    { // slab intersection point is further away							;
+                                    { // slab intersection point is further away
                                         if (IsBadTriangleAngle(largestAngleCorner.x, largestAngleCorner.y, middleAngleCorner.x, middleAngleCorner.y, line_inter_x, line_inter_y))
                                         {
                                             // apply perturbation
@@ -1707,7 +1683,7 @@ namespace TriangleNet
                                 {
                                     if (IsBadTriangleAngle(middleAngleCorner.x, middleAngleCorner.y, largestAngleCorner.x, largestAngleCorner.y, inter_x, inter_y))
                                     {
-                                        // if it is inside feasible region, then insert v2				
+                                        // if it is inside feasible region, then insert v2
                                         // apply perturbation
                                         // find the distance between circumcenter and intersection point
                                         d = UnityEngine.Mathf.Sqrt((inter_x - myCircumcenter.x) * (inter_x - myCircumcenter.x) +
@@ -2244,7 +2220,7 @@ namespace TriangleNet
             float first_x = 0, first_y = 0;	  // keeps the first point to be considered
             float second_x = 0, second_y = 0;  // for determining the edge we will begin
             float third_x = 0, third_y = 0;	  // termination
-            float[] returnPoint = new float[2];	  // for keeping the returned point	
+            float[] returnPoint = new float[2];	  // for keeping the returned point
             int numvertices = 0;	  // for keeping number of surrounding vertices
 
             // first determine which point to be used to find its neighbor triangles
@@ -2291,7 +2267,7 @@ namespace TriangleNet
                 {
                     // go to next triangle
                     tempotri = neighotri;
-                    // now the second point is the neighbor's third vertex			
+                    // now the second point is the neighbor's third vertex
                     second_x = returnPoint[0];
                     second_y = returnPoint[1];
                     // add a new point to the list of surrounding points
@@ -2347,12 +2323,12 @@ namespace TriangleNet
             {
                 // Find the neighbor.
                 badotri.Sym(ref neighbor);
-                // check if it is the one we are looking for by checking the corners			
+                // check if it is the one we are looking for by checking the corners
                 // first check if the neighbor is nonexistent, since it can be on the border
                 if ((neighbor.triangle != Mesh.dummytri))
                 {
                     // then check if two wanted corners are also in this triangle
-                    // take the vertices of the candidate neighbor		
+                    // take the vertices of the candidate neighbor
                     neighborvertex_1 = neighbor.Org();
                     neighborvertex_2 = neighbor.Dest();
                     neighborvertex_3 = neighbor.Apex();
@@ -2630,7 +2606,7 @@ namespace TriangleNet
                     wedges[i * 16 + 22 + 4 * (j - 1)] = x_4; wedges[i * 16 + 23 + 4 * (j - 1)] = y_4;
                     tempx = x_4; tempy = y_4;
                 }
-                //printf("LINE #3 (%.12f, %.12f) (%.12f, %.12f)\n", x_3,y_3,x3,y3);			
+                //printf("LINE #3 (%.12f, %.12f) (%.12f, %.12f)\n", x_3,y_3,x3,y3);
                 //printf("LINE #4 (%.12f, %.12f) (%.12f, %.12f)\n", x3,y3,x_4,y_4);
 
                 /// IF IT IS THE FIRST ONE, FIND THE CONVEX POLYGON
@@ -2664,7 +2640,7 @@ namespace TriangleNet
                 x1 = x2; y1 = y2;
             }
 
-            /// HALF PLANE INTERSECTION: START SPLITTING THE INITIAL POLYGON TO FIND FEASIBLE REGION    
+            /// HALF PLANE INTERSECTION: START SPLITTING THE INITIAL POLYGON TO FIND FEASIBLE REGION
             if (numpoints != 0)
             {
                 // first intersect the opposite located ones
@@ -2919,7 +2895,7 @@ namespace TriangleNet
                 {
                     if (line345 == 1)
                         continue;
-                    // rotate the vector around (petalx,petaly) in cw by (alpha/3.0)*j degrees			
+                    // rotate the vector around (petalx,petaly) in cw by (alpha/3.0)*j degrees
                     x_3 = x3 * UnityEngine.Mathf.Cos((alpha / (line345 - 1.0f)) * j) + y3 * UnityEngine.Mathf.Sin(((alpha / (line345 - 1.0f)) * j)) + petalx[i / 2] - petalx[i / 2] * UnityEngine.Mathf.Cos(((alpha / (line345 - 1.0f)) * j)) - petaly[i / 2] * UnityEngine.Mathf.Sin(((alpha / (line345 - 1.0f)) * j));
                     y_3 = -x3 * UnityEngine.Mathf.Sin(((alpha / (line345 - 1.0f)) * j)) + y3 * UnityEngine.Mathf.Cos(((alpha / (line345 - 1.0f)) * j)) + petaly[i / 2] + petalx[i / 2] * UnityEngine.Mathf.Sin(((alpha / (line345 - 1.0f)) * j)) - petaly[i / 2] * UnityEngine.Mathf.Cos(((alpha / (line345 - 1.0f)) * j));
                     // add these to wedges list as lines in order	
@@ -3070,7 +3046,7 @@ namespace TriangleNet
                 x0 = x1; y0 = y1;
                 x1 = x2; y1 = y2;
             }
-            /// HALF PLANE INTERSECTION: START SPLITTING THE INITIAL POLYGON TO FIND FEASIBLE REGION    
+            /// HALF PLANE INTERSECTION: START SPLITTING THE INITIAL POLYGON TO FIND FEASIBLE REGION
             if (numpoints != 0)
             {
                 // first intersect the opposite located ones
@@ -3400,7 +3376,7 @@ namespace TriangleNet
                     min = 99999999999999999;
                     max = -99999999999999999;
                     // compute the minimum and maximum of the
-                    // third coordinate of the cross product		
+                    // third coordinate of the cross product
                     for (j = 1; j <= 2 * polys[i][0] - 1; j = j + 2)
                     {
                         z = dx * (polys[i][j + 1] - y1) - dy * (polys[i][j] - x1);
@@ -3920,7 +3896,7 @@ namespace TriangleNet
         }
 
         /// <summary>
-        /// Given three coordinates of a triangle, tests a triangle to see if it satisfies 
+        /// Given three coordinates of a triangle, tests a triangle to see if it satisfies
         /// the minimum and/or maximum angle condition.
         /// </summary>
         /// <param name="x1"></param>
@@ -3936,10 +3912,10 @@ namespace TriangleNet
             float dxod, dyod, dxda, dyda, dxao, dyao;
             float dxod2, dyod2, dxda2, dyda2, dxao2, dyao2;
 
-            float apexlen, orglen, destlen, minedge;
+            float apexlen, orglen, destlen;
             float angle;    // in order to check minimum angle condition 
 
-            float maxangle, maxedge;    // in order to check minimum angle condition
+            float maxangle;    // in order to check minimum angle condition
             // calculate the side lengths
 
             dxod = x1 - x2;
@@ -3964,8 +3940,6 @@ namespace TriangleNet
             // try to find the minimum edge and accordingly the pqr orientation
             if ((apexlen < orglen) && (apexlen < destlen))
             {
-                // The edge opposite the apex is shortest.
-                minedge = apexlen;
                 // Find the square of the cosine of the angle at the apex.
                 angle = dxda * dxao + dyda * dyao;
                 angle = angle * angle / (orglen * destlen);
@@ -3974,8 +3948,6 @@ namespace TriangleNet
             }
             else if (orglen < destlen)
             {
-                // The edge opposite the origin is shortest.
-                minedge = orglen;
                 // Find the square of the cosine of the angle at the origin.
                 angle = dxod * dxao + dyod * dyao;
                 angle = angle * angle / (apexlen * destlen);
@@ -3984,8 +3956,6 @@ namespace TriangleNet
             }
             else
             {
-                // The edge opposite the destination is shortest.
-                minedge = destlen;
                 // Find the square of the cosine of the angle at the destination.
                 angle = dxod * dxda + dyod * dyda;
                 angle = angle * angle / (apexlen * orglen);
@@ -3994,22 +3964,16 @@ namespace TriangleNet
             // try to find the maximum edge and accordingly the pqr orientation
             if ((apexlen > orglen) && (apexlen > destlen))
             {
-                // The edge opposite the apex is longest.
-                maxedge = apexlen;
                 // Find the cosine of the angle at the apex.
                 maxangle = (orglen + destlen - apexlen) / (2 * UnityEngine.Mathf.Sqrt(orglen * destlen));
             }
             else if (orglen > destlen)
             {
-                // The edge opposite the origin is longest.
-                maxedge = orglen;
                 // Find the cosine of the angle at the origin.
                 maxangle = (apexlen + destlen - orglen) / (2 * UnityEngine.Mathf.Sqrt(apexlen * destlen));
             }
             else
             {
-                // The edge opposite the destination is longest.
-                maxedge = destlen;
                 // Find the cosine of the angle at the destination.
                 maxangle = (apexlen + orglen - destlen) / (2 * UnityEngine.Mathf.Sqrt(apexlen * orglen));
             }

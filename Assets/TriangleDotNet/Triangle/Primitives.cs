@@ -154,7 +154,7 @@ namespace TriangleNet
         {
             Statistic.CounterClockwiseCountDecimal++;
 
-            decimal detleft, detright, det, detsum;
+            decimal detleft, detright, det;
 
             detleft = ((decimal)pa.x - (decimal)pc.x) * ((decimal)pb.y - (decimal)pc.y);
             detright = ((decimal)pa.y - (decimal)pc.y) * ((decimal)pb.x - (decimal)pc.x);
@@ -166,20 +166,12 @@ namespace TriangleNet
                 {
                     return det;
                 }
-                else
-                {
-                    detsum = detleft + detright;
-                }
             }
             else if (detleft < 0.0m)
             {
                 if (detright >= 0.0m)
                 {
                     return det;
-                }
-                else
-                {
-                    detsum = -detleft - detright;
                 }
             }
 
