@@ -132,3 +132,4 @@ Morpher/UpgradeLog*.htm
 
 # Visual Studio 6 workspace options file
 *.opt
+/.vscode

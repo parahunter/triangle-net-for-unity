@@ -1,6 +1,5 @@
 ﻿using TriangleNet.Geometry;
 using TriangleNet.Data;
-using System.Collections;
 using System.Collections.Generic;
 
 public static class InputGeometryExtensions
@@ -20,7 +19,7 @@ public static class InputGeometryExtensions
         foreach (var pt in points)
         {
             geometry.AddPoint(pt.X, pt.Y, pt.Boundary, pt.Attributes);
-            m++; 
+            m++;
         }
 
         for (int i = 0; i < m; i++)

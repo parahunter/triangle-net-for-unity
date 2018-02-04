@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using TriangleNet.Geometry;
 
@@ -14,15 +13,15 @@ public class DelaunayDemo : MonoBehaviour
     public float circleDistance = 0.7f;
 
     public UPolygon logoOutline;
-    public UPolygon[] holes; 
+    public UPolygon[] holes;
 
     public float boxWidth = 1f;
     public float zOffset = 0.5f;
 
     Mesh mesh;
 
-	// Use this for initialization
-	void Start () 
+    // Use this for initialization
+    void Start ()
     {
         geometry = new InputGeometry();
 
@@ -54,15 +53,14 @@ public class DelaunayDemo : MonoBehaviour
         }
 
 
-        List<Point> points = new List<Point>();
         for (float offsetX = -distance; offsetX < distance; offsetX += boxDistance)
         {
             for (float offsetY = -verticalDistance; offsetY < verticalDistance; offsetY += boxDistance)
             {
                 Vector2 offset = new Vector2(offsetX, offsetY) + Vector2.one * boxDistance * 0.5f;
 
-                float radians = Random.RandomRange(0, 2 * Mathf.PI);
-                float length = Random.RandomRange(0, circleDistance);
+                float radians = Random.Range(0, 2 * Mathf.PI);
+                float length = Random.Range(0, circleDistance);
 
                 Vector2 pos = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians)) * length;
                 pos += offset;
@@ -87,12 +85,12 @@ public class DelaunayDemo : MonoBehaviour
         //generate mesh based on triangulation
 
         Dictionary<int, float> zOffsets = new Dictionary<int, float>();
-        
+
         foreach(KeyValuePair<int, TriangleNet.Data.Vertex> pair in meshRepresentation.vertices)
         {
-            zOffsets.Add(pair.Key, Random.RandomRange(-zOffset, zOffset));
+            zOffsets.Add(pair.Key, Random.Range(-zOffset, zOffset));
         }
-        
+
         int triangleIndex = 0;
         List<Vector3> vertices = new List<Vector3>(meshRepresentation.triangles.Count * 3);
         List<int> triangleIndices = new List<int>(meshRepresentation.triangles.Count * 3);
@@ -125,8 +123,8 @@ public class DelaunayDemo : MonoBehaviour
         mesh.triangles = triangleIndices.ToArray();
         mesh.RecalculateNormals();
         GetComponent<MeshFilter>().mesh = mesh;
-	}
-	
+    }
+
     void OnDrawGizmos()
     {
         if (holes.Length <= 0)

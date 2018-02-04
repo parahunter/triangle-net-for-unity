@@ -20,12 +20,10 @@ namespace TriangleNet.Tools
     /// </summary>
     public class RegionIterator
     {
-        Mesh mesh;
         List<Triangle> viri;
 
         public RegionIterator(Mesh mesh)
         {
-            this.mesh = mesh;
             this.viri = new List<Triangle>();
         }
 
@@ -49,8 +47,6 @@ namespace TriangleNet.Tools
             Otri testtri = default(Otri);
             Otri neighbor = default(Otri);
             Osub neighborsubseg = default(Osub);
-
-            Behavior behavior = mesh.behavior;
 
             // Loop through all the infected triangles, spreading the attribute
             // and/or area constraint to their neighbors, then to their neighbors'
